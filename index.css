@@ -53,11 +53,18 @@ body {
 .logo-link {
     width: auto;
     height: 100%;
+    transition: 0.5s;
 }
 
 .logo-link:hover {
     width: auto;
     height: 120%;
+}
+
+.logo-image {
+    width: auto;
+    height: 100%;
+    transition: 0.5s;
 }
 
 .header-search {
@@ -100,10 +107,16 @@ body {
 }
 
 .container {
-    width: 90%;
-    height: 70%;
+    width: 85%;
+    height: 55%;
     border-radius: 30px;
     border: 1.5px solid #dfe1e5;
+    transition: 0.5s;
+}
+
+.container:hover {
+    width: 90%;
+    height: 60%;
 }
 
 
