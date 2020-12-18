@@ -1,0 +1,88 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    font-family: sans-serif;
+}
+
+body {
+    line-height: 1.5;
+    margin: 0;
+    background: linear-gradient(45deg, cornflowerblue, red);
+    overflow: hidden;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-around;
+}
+
+.main {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.visualization {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 75%;
+    flex-basis: 55%;
+    transition: 0.5s;
+}
+
+.visualization:hover {
+    flex-basis: 60%;
+}
+
+.sort {
+    flex-basis: 60%;
+    border-radius: 15px;
+    background: linear-gradient(45deg, yellow, green);
+    transition: 0.5s;
+}
+
+.sort:hover {
+    flex-basis: 65%;
+}
+
+.graph {
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30%;
+    transition: 0.5s;
+}
+
+.graph-container {
+    flex-basis: 40%;
+    border-radius: 5px;
+    width: 100%;
+    transition: 0.5s;
+}
+
+.graph-container:hover {
+    flex-basis: 45%;
+    width: 105%;
+}
+
+#graph-a {
+    background: linear-gradient(45deg, pink, white);
+}
+
+#graph-b {
+    background: linear-gradient(45deg, orange, violet);
+}
+
+.ui {
+    border-radius: 15px;
+    width: 75%;
+    flex-basis: 20%;
+    background: linear-gradient(45deg, mintcream, aqua);
+    transition: 0.5s;
+}
+
+.ui:hover {
+    flex-basis: 25%;
+}
