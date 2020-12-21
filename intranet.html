@@ -10,16 +10,21 @@
     <div class="main flex">
         <div class="visualization flex">
             <div class="sort flex">
-
+              <canvas id="canvas-sort"></canvas>
             </div>
             <div class="graph flex">
-                <div id="graph-a" class="graph-container"></div>
-                <div id="graph-b" class="graph-container"></div>
+                <div id="graph-a" class="graph-container">
+                  <canvas id="canvas-graph-a"></canvas>
+                </div>
+                <div id="graph-b" class="graph-container">
+                  <canvas id="canvas-graph-b"></canvas>
+                </div>
             </div>
         </div>
         <div class="ui flex">
         </div>
     </div>
+    <script defer src="intranet.js"></script>
 </body>
 
 </html>
