@@ -1,13 +1,13 @@
-let sortCanvas = document.getElementById("canvas-sort");
+let visualizerCanvas = document.getElementById("canvas-visualizer");
 let graphACanvas = document.getElementById("canvas-graph-a");
 let graphBCanvas = document.getElementById("canvas-graph-b");
 
-let sortContext = sortCanvas.getContext("webgl");
+let visualizerContext = visualizerCanvas.getContext("webgl");
 let graphAContext = graphACanvas.getContext("webgl");
 let graphBContext = graphBCanvas.getContext("webgl");
 
-sortCanvas.width = sortCanvas.clientWidth;
-sortCanvas.height = sortCanvas.clientHeight;
+visualizerCanvas.width = visualizerCanvas.clientWidth;
+visualizerCanvas.height = visualizerCanvas.clientHeight;
 
 graphACanvas.width = graphACanvas.clientWidth;
 graphACanvas.height = graphACanvas.clientHeight;
@@ -17,9 +17,7 @@ graphBCanvas.height = graphBCanvas.clientHeight;
 
 let elementCount = 100;
 
-function getRandomizedList(minValue, maxValue, count) {
-  let randomizedList = [];
-  for(let i = 0; i < count; ++i) {
+let randomArray = getRandomArray_Integer(1, 1000, 1000);
 
-  }
-}
+let timeStep = 5; /* milliseconds */
+let heightOffset = 50; /* px */

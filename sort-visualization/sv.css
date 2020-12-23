@@ -25,7 +25,7 @@ body {
     height: 100%;
 }
 
-.visualization {
+.sorting-visualizer {
     flex-direction: row;
     justify-content: space-between;
     width: 75%;
@@ -33,18 +33,18 @@ body {
     transition: 0.5s;
 }
 
-.visualization:hover {
+.sorting-visualizer:hover {
     flex-basis: 60%;
 }
 
-.sort {
+.visualizer {
     flex-basis: 60%;
     border-radius: 15px;
     background: linear-gradient(45deg, yellow, green);
     transition: 0.5s;
 }
 
-.sort:hover {
+.visualizer:hover {
     flex-basis: 65%;
 }
 
