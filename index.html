@@ -1,24 +1,25 @@
 <html lang="ko">
-
 <head>
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <link rel="stylesheet" type="text/css" href="welcome.css">
-    <link rel="stylesheet" type="text/css" href="main.css">
+  <link rel="stylesheet" type="text/css" href="css/keyframes.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" type="text/css" href="css/welcome.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 
 <body>
-    <div class="main flex flex-center">
-        <div class="contents-container flex flex-center shadow">
-            <div class="welcome">
-                <div id="welcome-text" class="welcome-text" href="sv.html">
-                    Welcome
-                </div>
-            </div>
-            <div class="welcome-next">
-                Next
-            </div>
+  <div id="main" class="main flex flex-center">
+    <div id="contents-container" class="contents-container flex flex-center shadow">
+      <div id="welcome" class="welcome">
+        <div class="welcome-title-container">
+          <p class="welcome-title">Welcome</p>
         </div>
+      </div>
     </div>
+    <div id="welcome-next" class="action-button next transparent hidden">
+      Next
+    </div>
+  </div>
+  <script defer src="js/animate.js"></script>
 </body>
 
 </html>

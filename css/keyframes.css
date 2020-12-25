@@ -1,0 +1,60 @@
+@keyframes move-to-left {
+  to {
+    left: -100vw;
+  }
+}
+
+@keyframes move-to-right {
+  to {
+    left: 100vw;
+  }
+}
+
+@keyframes get-bigger {
+  from {
+    width: 0vw;
+    height: 0vh;
+  }
+  to {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+@keyframes font-size-get-bigger {
+  to {
+    font-size: 100px;
+  }
+}
+
+@keyframes be-square {
+  to {
+    border-radius: 0%;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    visibility: visible;
+  }
+  
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.fade-in {
+  animation: fade-in 1s ease 0s forwards;
+}
+
+.fade-out {
+  animation: fade-in 1s ease 0s forwards;
+}

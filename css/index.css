@@ -1,0 +1,49 @@
+@font-face {
+  font-family: 'metro';
+  src: url('../metro/metro.svg') format('svg'), url('../metro/metro.woff') format('woff'), url('../metro/metro.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'metro';
+}
+
+body {
+  line-height: 1.5;
+  margin: 0;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  justify-content: space-around;
+  align-items: center;
+}
+
+.circle {
+  border-radius: 50%;
+}
+
+.shadow {
+  box-shadow: -5px 5px 25px var(#000000);
+}
+
+.transparent {
+  opacity: 0;
+}
+
+.hidden {
+  visibility: hidden;
+}

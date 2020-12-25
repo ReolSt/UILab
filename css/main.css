@@ -1,0 +1,52 @@
+.main {
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+  cursor: default;
+  background: #111e22;
+  background: -webkit-linear-gradient(to bottom,  #070f12,  #111e22,  #172c35);
+  background: linear-gradient(to bottom,  #070f12,  #111e22,  #172c35);
+}
+
+.contents-container {
+  width: 0vw;
+  height: 0vh;
+  align-self: center;
+  background: #16499A;
+  background: linear-gradient(to bottom,  #16499A,  #16499A,  #1c59bb);
+  border-radius: 50%;
+  animation: get-bigger 1s ease 0.5s both, be-square 1.5s ease 0.5s both;
+}
+
+.right-hidden {
+  left: 100vw;
+}
+
+.left-hidden {
+  left: -100vw;
+}
+
+.action-button {
+  position: absolute;
+  width: 10rem;
+  padding: 0.5rem 0rem 0.5rem 0rem;
+  background: linear-gradient(to right,  #137cfd,  #1c81fd);
+  text-align: center;
+  color: #FFFFFF;
+  font-size: 20px;
+  animation: fade-in 1s ease 2.25s both;
+}
+
+.action-button:hover {
+  background: linear-gradient(to right, #2184fd,  #2b89fd);
+}
+
+.next {
+  right: 2rem;
+  bottom: 2rem;
+}
+
+.letsgo {
+  right: 2rem;
+  bottom: 2rem;
+}

@@ -1,0 +1,26 @@
+.welcome {
+  width: 0vw;
+  height: 0vh;
+  animation: get-bigger 1s ease 0s both;
+}
+
+.welcome-title-container {
+  display: table;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.welcome-title {
+  display: table-cell;
+  align-self: center;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 100px;
+  width: 100%;
+  height: fit-content;
+  opacity: 0;
+  cursor: default;
+  color: #FFFFFF;
+  animation: fade-in 1s ease 1.5s both;
+}
