@@ -7,39 +7,32 @@
 </head>
 
 <body>
-  <script id="vertex-shader" type="x-shader/x-vertex">
-    attribute vec4 a_position;
-
-    void main() {
-      gl_Position = a_position;
-    }
-  </script>
-  <script id="fragment-shader" type="x-shader/x-vertex">
-    precision highp float;
-
-    void main() {
-      gl_FragColor = vec4(1, 0, 0.5, 1);
-    }
-  </script>
-  <div class="main flex">
-    <div class="sorting-visualizer flex">
-      <div class="visualizer flex">
-        <canvas id="canvas-visualizer"></canvas>
-      </div>
-      <div class="graph flex">
-        <div id="graph-a" class="graph-container">
-          <canvas id="canvas-graph-a"></canvas>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 a_position; void main() { gl_Position = a_position; }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-vertex">
+        precision highp float; void main() { gl_FragColor = vec4(1, 0, 0.5, 1); }
+    </script>
+    <div class="main flex">
+        <div class="sorting-visualizer flex">
+            <div class="visualizer flex">
+                <canvas id="canvas-visualizer"></canvas>
+            </div>
+            <div class="graph flex">
+                <div id="graph-a" class="graph-container">
+                    <canvas id="canvas-graph-a"></canvas>
+                </div>
+                <div id="graph-b" class="graph-container">
+                    <canvas id="canvas-graph-b"></canvas>
+                </div>
+            </div>
         </div>
-        <div id="graph-b" class="graph-container">
-          <canvas id="canvas-graph-b"></canvas>
+        <div class="ui flex">
         </div>
-      </div>
     </div>
-    <div class="ui flex">
-    </div>
-  </div>
-  <script defer src="math.js"></script>
-  <script defer src="shader.js"></script>
-  <script defer src="main.js"></script>
+    <script defer src="math.js"></script>
+    <script defer src="shader.js"></script>
+    <script defer src="main.js"></script>
 </body>
+
 </html>

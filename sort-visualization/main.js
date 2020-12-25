@@ -24,21 +24,20 @@ let heightOffset = 50; /* px */
 
 let vertexShader = document.getElementById("vertex-shader");
 vertexShader = getShader(
-  visualizer,
-  visualizer.VERTEX_SHADER,
-  vertexShader.innerText
+    visualizer,
+    visualizer.VERTEX_SHADER,
+    vertexShader.innerText
 );
 
 let fragmentShader = document.getElementById("fragment-shader");
 fragmentShader = getShader(
-  visualizer,
-  visualizer.FRAGMENT_SHADER,
-  fragmentShader.innerText
+    visualizer,
+    visualizer.FRAGMENT_SHADER,
+    fragmentShader.innerText
 );
 
 let mainProgram = getProgram(
-  visualizer,
-  [vertexShader, fragmentShader]
+    visualizer, [vertexShader, fragmentShader]
 );
 
 let positionAttributeLocation = visualizer.getAttribLocation(mainProgram, "a_position");
@@ -47,15 +46,15 @@ let positionBuffer = visualizer.createBuffer();
 visualizer.bindBuffer(visualizer.ARRAY_BUFFER, positionBuffer);
 
 let positions = [
-  0, 0,
-  0, 0.5,
-  0.7, 0
+    0, 0,
+    0, 0.5,
+    0.7, 0
 ];
 
 visualizer.bufferData(
-  visualizer.ARRAY_BUFFER,
-  new Float32Array(positions),
-  visualizer.STATIC_DRAW
+    visualizer.ARRAY_BUFFER,
+    new Float32Array(positions),
+    visualizer.STATIC_DRAW
 );
 
 let vSize = 2;
@@ -65,27 +64,27 @@ let vStride = 0;
 let vOffset = 0;
 
 function render() {
-  visualizer.viewport(0, 0, visualizer.canvas.width, visualizer.canvas.height);
+    visualizer.viewport(0, 0, visualizer.canvas.width, visualizer.canvas.height);
 
-  visualizer.clearColor(0, 0, 0, 0);
-  visualizer.clear(visualizer.COLOR_BUFFER_BIT);
-  visualizer.useProgram(mainProgram);
+    visualizer.clearColor(0, 0, 0, 0);
+    visualizer.clear(visualizer.COLOR_BUFFER_BIT);
+    visualizer.useProgram(mainProgram);
 
-  
-  visualizer.VertexAttribPointer(
-    positionAttributeLocation,
-    vSize,
-    vType,
-    vNormalize,
-    vStride,
-    vOffset
-  );
 
-  let offset = 0;
-  let count = 3;
-  visualizer.drawArrays(
-    visualizer.TRIANGLES,
-    offset,
-    count
-  );
+    visualizer.VertexAttribPointer(
+        positionAttributeLocation,
+        vSize,
+        vType,
+        vNormalize,
+        vStride,
+        vOffset
+    );
+
+    let offset = 0;
+    let count = 3;
+    visualizer.drawArrays(
+        visualizer.TRIANGLES,
+        offset,
+        count
+    );
 }
