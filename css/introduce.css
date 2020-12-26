@@ -1,4 +1,48 @@
 .introduce {
   opacity: 0;
-  transition: 1s ease;
+  transition: opacity 1s ease;
+  width: 100vw;
+  height: 100vh;
+}
+
+.items {
+  display: flex;
+  position: relative;
+  width: 65vw;
+  height: 35vh;
+  top: 22.5vh;
+  margin-left: 17.5vw;
+  align-self: center;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.item-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.item {
+  display: flex;
+  width: 50%;
+  flex-direction: row;
+  align-items: center;
+}
+
+.item>* {
+  margin-left: 3rem;
+}
+
+.item-icon {
+  font-size: 3rem;
+}
+
+.item-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-main-title {
+  font-weight: bold;
 }

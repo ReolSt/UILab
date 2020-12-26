@@ -1,4 +1,7 @@
 {
   "editor.tabSize": 2,
-  "editor.fontSize": 12
+  "editor.fontSize": 12,
+  "workbench.editor.showIcons": false,
+  "editor.autoIndent": "advanced",
+  "git.ignoreLimitWarning": true
 }
