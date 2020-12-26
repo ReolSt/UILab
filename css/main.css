@@ -3,6 +3,7 @@
   height: 100vh;
   user-select: none;
   cursor: default;
+  color: #FFFFFF;
   background: #111e22;
   background: -webkit-linear-gradient(to bottom,  #070f12,  #111e22,  #172c35);
   background: linear-gradient(to bottom,  #070f12,  #111e22,  #172c35);
@@ -32,21 +33,33 @@
   padding: 0.5rem 0rem 0.5rem 0rem;
   background: linear-gradient(to right,  #137cfd,  #1c81fd);
   text-align: center;
-  color: #FFFFFF;
   font-size: 20px;
-  animation: fade-in 1s ease 2.25s both;
 }
 
 .action-button:hover {
   background: linear-gradient(to right, #2184fd,  #2b89fd);
 }
 
-.next {
+.letsgo {
   right: 2rem;
   bottom: 2rem;
 }
 
-.letsgo {
-  right: 2rem;
-  bottom: 2rem;
+.title {
+  position: relative;
+  top: 5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.main-title {
+  font-size: 60px;
+  word-spacing: -0.2em;
+  width: 100%;
+}
+
+.sub-title {
+  font-size: 20px;
+  word-spacing: -0.2em;
+  width: 100%;
 }

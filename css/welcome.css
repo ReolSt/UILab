@@ -4,14 +4,14 @@
   animation: get-bigger 1s ease 0s both;
 }
 
-.welcome-title-container {
+.welcome-title {
   display: table;
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-.welcome-title {
+.welcome-main-title {
   display: table-cell;
   align-self: center;
   text-align: center;
@@ -21,6 +21,13 @@
   height: fit-content;
   opacity: 0;
   cursor: default;
-  color: #FFFFFF;
   animation: fade-in 1s ease 1.5s both;
+}
+
+.welcome-next {
+  visibility: hidden;
+  opacity: 0;
+  right: 2rem;
+  bottom: 2rem;
+  animation: fade-in 1s ease 2.25s both;
 }
