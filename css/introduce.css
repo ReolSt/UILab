@@ -8,10 +8,10 @@
 .items {
   display: flex;
   position: relative;
-  width: 65vw;
-  height: 35vh;
-  top: 22.5vh;
-  margin-left: 17.5vw;
+  height: 40vh;
+  top: 20vh;
+  width: 70vw;
+  margin: 0 auto;
   align-self: center;
   flex-direction: column;
   justify-content: space-between;
@@ -45,4 +45,27 @@
 
 .item-main-title {
   font-weight: bold;
+}
+
+@media screen and (orientation: portrait) {
+  .items {
+    justify-content: stretch;
+    width: fit-content;
+    height: 50vh;
+    margin: 0 auto;
+  }
+
+  .item-row {
+    flex-direction: column;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .item-row > * {
+    margin-bottom: 5rem;
+  }
+
+  .item {
+    width: fit-content;
+  }
 }
