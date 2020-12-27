@@ -2,7 +2,8 @@
   opacity: 0;
   transition: opacity 1s ease;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  height: fit-content;
 }
 
 .items {
@@ -20,6 +21,7 @@
 .item-row {
   display: flex;
   flex-direction: row;
+  margin: 0 0;
   justify-content: space-between;
 }
 
@@ -47,22 +49,29 @@
   font-weight: bold;
 }
 
-@media screen and (orientation: portrait) {
+@media screen and (max-width: 640px) and (orientation: landscape) {
+  .items {
+    width: 85vw;
+  }
+}
+
+@media screen and (max-width: 640px) and (orientation: portrait) {
   .items {
     justify-content: stretch;
     width: fit-content;
     height: 50vh;
+    top: 15vh;
     margin: 0 auto;
   }
 
   .item-row {
     flex-direction: column;
     height: auto;
-    margin: 0 auto;
+    margin: 0 0;
   }
 
   .item-row > * {
-    margin-bottom: 5rem;
+    margin-bottom: 2rem;
   }
 
   .item {

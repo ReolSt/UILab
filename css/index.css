@@ -8,7 +8,7 @@
 html,
 body {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'metro';
 }
 
@@ -48,8 +48,38 @@ a {
   display: none;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 640px) and (orientation: portrait) {
   html, body {
-    font-size: 14px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 460px) and (orientation: portrait) {
+  html, body {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 420px) and (orientation: portrait) {
+  html, body {
+    font-size: 9px;
+  }
+}
+
+@media screen and (max-height: 640px) and (orientation: landscape) {
+  html, body {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-height: 460px) and (orientation: landscape) {
+  html, body {
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-height: 420px) and (orientation: landscape) {
+  html, body {
+    font-size: 9px;
   }
 }

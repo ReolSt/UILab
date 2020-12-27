@@ -11,19 +11,9 @@
 }
 
 @keyframes get-bigger {
-  from {
-    width: 0%;
-    height: 0%;
-  }
   to {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-@keyframes font-size-get-bigger {
-  to {
-    font-size: 100px;
+    width: 100vw;
+    height: 100vh;
   }
 }
 
