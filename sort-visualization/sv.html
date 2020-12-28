@@ -2,37 +2,54 @@
 <html lang="ko">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" href="sv.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/sv.css">
 </head>
 
 <body>
-    <script id="vertex-shader" type="x-shader/x-vertex">
-        attribute vec4 a_position; void main() { gl_Position = a_position; }
-    </script>
-    <script id="fragment-shader" type="x-shader/x-vertex">
-        precision highp float; void main() { gl_FragColor = vec4(1, 0, 0.5, 1); }
-    </script>
-    <div class="main flex">
-        <div class="sorting-visualizer flex">
-            <div class="visualizer flex">
-                <canvas id="canvas-visualizer"></canvas>
-            </div>
-            <div class="graph flex">
-                <div id="graph-a" class="graph-container">
-                    <canvas id="canvas-graph-a"></canvas>
-                </div>
-                <div id="graph-b" class="graph-container">
-                    <canvas id="canvas-graph-b"></canvas>
-                </div>
-            </div>
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    #version 300 es
+    layout (location = 0) in vec3 aPosition;
+    layout (location = 1) in vec4 aColor;
+
+    out vec3 vColor;
+    void main() {
+      gl_Position = aPosition;
+      vColor = aColor;
+    }
+  </script>
+  <script id="fragment-shader" type="x-shader/x-vertex">
+    #version 300 es
+    precision highp float;
+
+    in vec4 vColor;
+
+    out vec4 fragColor;
+
+    void main() {
+      fragColor = vColor;
+    }
+  </script>
+  <div class="main flex">
+    <div class="sorting-visualizer flex">
+      <div class="visualizer flex">
+        <canvas id="canvas-visualizer"></canvas>
+      </div>
+      <div class="graph flex">
+        <div id="graph-a" class="graph-container">
+          <canvas id="canvas-graph-a"></canvas>
         </div>
-        <div class="ui flex">
+        <div id="graph-b" class="graph-container">
+          <canvas id="canvas-graph-b"></canvas>
         </div>
+      </div>
     </div>
-    <script defer src="math.js"></script>
-    <script defer src="shader.js"></script>
-    <script defer src="main.js"></script>
+    <div class="ui flex">
+    </div>
+  </div>
+  <script defer src="js/math.js"></script>
+  <script defer src="js/shader.js"></script>
+  <script defer src="js/main.js"></script>
 </body>
 
 </html>

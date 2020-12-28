@@ -40,15 +40,13 @@ let mainProgram = getProgram(
     visualizer, [vertexShader, fragmentShader]
 );
 
-let positionAttributeLocation = visualizer.getAttribLocation(mainProgram, "a_position");
-
 let positionBuffer = visualizer.createBuffer();
 visualizer.bindBuffer(visualizer.ARRAY_BUFFER, positionBuffer);
 
 let positions = [
     0, 0,
     0, 0.5,
-    0.7, 0
+    0.5, 0
 ];
 
 visualizer.bufferData(
@@ -57,7 +55,15 @@ visualizer.bufferData(
     visualizer.STATIC_DRAW
 );
 
-let vSize = 2;
+let colorBuffer = visualizer.createBuffer();
+visualizer.bindBuffer(visualizer.ARRAY_BUFFER, positionBuffer);
+
+let colors = [
+  1, 0, 0, 0.5,
+  0, 1, 0, 1,
+  0.5, 1, 0.5 ,0.2
+];
+
 let vType = visualizer.FLOAT;
 let vNormalize = false;
 let vStride = 0;
@@ -70,10 +76,13 @@ function render() {
     visualizer.clear(visualizer.COLOR_BUFFER_BIT);
     visualizer.useProgram(mainProgram);
 
+    visualizer.enableVertexAttribArray(0);
 
-    visualizer.VertexAttribPointer(
-        positionAttributeLocation,
-        vSize,
+    visualizer.bindBuffer(visualizer.ARRAY_BUFFER, positionBuffer);
+
+    visualizer.vertexAttribPointer(
+        0,
+        2,
         vType,
         vNormalize,
         vStride,
@@ -82,9 +91,29 @@ function render() {
 
     let offset = 0;
     let count = 3;
+
+    visualizer.enableVertexAttribArray(1);
+
+    visualizer.bindBuffer(visualizer.ARRAY_BUFFER, positionBuffer);
+
+    visualizer.vertexAttribPointer(
+      1,
+      4,
+      vType,
+      vNormalize,
+      vStride,
+      vOffset
+    );
+
     visualizer.drawArrays(
         visualizer.TRIANGLES,
         offset,
         count
     );
 }
+
+render();
+
+let colorSwitchInterval = setInterval(() => {
+  let color = [Math.random(), Math.random(), Math.random(), 1];
+}, 1000);

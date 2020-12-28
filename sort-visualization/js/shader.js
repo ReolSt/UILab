@@ -1,7 +1,4 @@
-a = 1;
-
 function getShader(glContext, type, source) {
-    a = source;
     let shader = glContext.createShader(type);
     glContext.shaderSource(shader, source);
     glContext.compileShader(shader);
