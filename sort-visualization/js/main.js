@@ -151,6 +151,10 @@ class GLArrayBuffer {
     this.array = [];
   }
 
+  clear() {
+    this.array = [];
+  }
+
   render() {
     this.glContext.enableVertexAttribArray(this.index);
     this.glContext.bindBuffer(this.glContext.ARRAY_BUFFER, this.buffer);
@@ -216,19 +220,6 @@ class ColorBuffer extends ArrayBuffer {
     this.array.pop(this.size);
   }
 }
-
-let vertexBuffer = {
-  clearBuffer: () => {
-    this.arrayBuffer = [];
-  },
-
-};
-
-let colorBuffer = {
-  clearBuffer: () => {
-    this.arrayBuffer = [];
-  },
-};
 
 let renderInterval = setInterval(() => {
   render();
