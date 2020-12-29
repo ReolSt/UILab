@@ -7,19 +7,18 @@
 </head>
 
 <body>
-  <script id="vertex-shader" type="x-shader/x-vertex">
-    #version 300 es
+  <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
     layout (location = 0) in vec3 aPosition;
     layout (location = 1) in vec4 aColor;
 
-    out vec3 vColor;
+    out vec4 vColor;
+
     void main() {
-      gl_Position = aPosition;
+      gl_Position = vec4(aPosition, 1.0);
       vColor = aColor;
     }
   </script>
-  <script id="fragment-shader" type="x-shader/x-vertex">
-    #version 300 es
+  <script id="fragment-shader" type="x-shader/x-vertex">#version 300 es
     precision highp float;
 
     in vec4 vColor;
