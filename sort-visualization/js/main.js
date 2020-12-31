@@ -1,19 +1,9 @@
 let visualizerCanvas = document.getElementById("canvas-visualizer");
-let graphACanvas = document.getElementById("canvas-graph-a");
-let graphBCanvas = document.getElementById("canvas-graph-b");
 
 let visualizer = visualizerCanvas.getContext("webgl2");
-let graphA = graphACanvas.getContext("webgl2");
-let graphB = graphBCanvas.getContext("webgl2");
 
 visualizerCanvas.width = visualizerCanvas.clientWidth;
 visualizerCanvas.height = visualizerCanvas.clientHeight;
-
-graphACanvas.width = graphACanvas.clientWidth;
-graphACanvas.height = graphACanvas.clientHeight;
-
-graphBCanvas.width = graphBCanvas.clientWidth;
-graphBCanvas.height = graphBCanvas.clientHeight;
 
 let elementCount = 100;
 
@@ -46,7 +36,7 @@ let mainProgram = new GLProgram({
 
 let vertexBuffer = new GLArrayBuffer({
   glContext: visualizer,
-  size: 4,
+  size: 3,
   index: 0,
   normalize: false,
   stride: 0,
@@ -56,30 +46,95 @@ let vertexBuffer = new GLArrayBuffer({
 let colorBuffer = new GLArrayBuffer({
   glContext: visualizer,
   size: 4,
-  index: 0,
+  index: 1,
   normalize: false,
   stride: 0,
   offset: 0
 });
 
-renderer.attachProgram(mainProgram);
-
 renderer.attachBuffer(vertexBuffer);
 renderer.attachBuffer(colorBuffer);
 
-vertexBuffer.setBuffer([
-  0, 0, 0, 1,
-  0, 1, 0, 1,
-  1, 0, 0, 1
-]);
+let triangleVertexes = [
+  0, 0.1, 0,
+  0.5, 0, 0.5,
+  0, 0.5, 0.5,
+  0.4, 0.2, 0.1,
+  0.6, 0.6, 0.4,
+  0.8, 0.8, 0.6
+];
 
-colorBuffer.setBuffer([
+let triangleColors = [
   1, 1, 0, 1,
-  0, 1, 0, 0.5,
-  1, 0, 0, 1
-]);
+  0, 1, 0, 1,
+  1, 0, 0, 1,
+  1, 0, 0, 1,
+  0, 1, 1, 1,
+  0, 0, 1, 1
+];
 
+let cameraMatrix = [
+  [1, 0, 0, 0],
+  [0, 1, 0, 0],
+  [0 ,0, 1, 0],
+  [0, 0, 0, 1]
+];
 
-let renderInterval = setInterval(() => {
+let keys = {};
+
+document.body.addEventListener("keydown", event => {
+  keys[event.key] = true;
+});
+
+document.body.addEventListener("keyup", event => {
+  keys[event.key] = false;
+});
+
+let sensitivity = 0.001;
+
+document.body.addEventListener("mousemove", event => {
+  if(event.button == 0) {
+    console.log(event);
+    cameraMatrix[0][3] -= sensitivity * event.movementX;
+    cameraMatrix[1][3] += sensitivity * event.movementY;
+  }
+});
+
+let renderloop = setInterval(() => {
+  if(keys["w"]) {
+    cameraMatrix[1][3] -= 0.01;
+  }
+  if(keys["a"]) {
+    cameraMatrix[0][3] += 0.01;
+  }
+  if(keys["s"]) {
+    cameraMatrix[1][3] += 0.01;
+  }
+  if(keys["d"]) {
+    cameraMatrix[0][3] -= 0.01;
+  }
+
+  if(keys["q"]) {
+    cameraMatrix[0][0] -= 0.01;
+    cameraMatrix[1][1] -= 0.01;
+    cameraMatrix[2][2] -= 0.01;
+  }
+  if(keys["e"]) {
+    cameraMatrix[0][0] += 0.01;
+    cameraMatrix[1][1] += 0.01;
+    cameraMatrix[2][2] += 0.01;
+  }
+
+  mainProgram.use();
+
+  visualizer.uniformMatrix4fv(
+    mainProgram.uniformLocation("cameraMatrix"),
+    false,
+    new Float32Array(getFlattenArray(cameraMatrix))
+  );
+
+  vertexBuffer.setBuffer(triangleVertexes);
+  colorBuffer.setBuffer(triangleColors);
+
   renderer.render();
 }, 33);

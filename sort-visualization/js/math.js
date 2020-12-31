@@ -61,3 +61,18 @@ function getMaximum(list) {
         }
     })
 }
+
+function getFlattenArray(array) {
+  let flattenArray = [];
+  
+  array.forEach(element => {
+    if(element instanceof Array) {
+      flattenArray = flattenArray.concat(getFlattenArray(element));
+    }
+    else {
+      flattenArray.push(element);
+    }
+  });
+  
+  return flattenArray;
+}

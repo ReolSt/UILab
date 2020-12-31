@@ -13,8 +13,8 @@ class GLShader {
         return;
     }
 
-    console.error("GLShader: Shader Compiling Error\n" + this.glContext.getShaderInfoLog(shader));
-    this.glContext.deleteShader(shader);
+    console.error("GLShader: Shader Compiling Error\n" + this.glContext.getShaderInfoLog(this.shader));
+    this.glContext.deleteShader(this.shader);
 
     this.typeString = "";
     switch(this.type) {
@@ -44,7 +44,7 @@ class GLProgram {
 
     this.glContext.linkProgram(this.program);
 
-    let success = this.glContext.getProgramParameter(this.program, this.glContext.LINK_STAUTS);
+    let success = this.glContext.getProgramParameter(this.program, this.glContext.LINK_STATUS);
     if(success) {
       return;
     }
@@ -55,6 +55,10 @@ class GLProgram {
 
   use() {
     this.glContext.useProgram(this.program);
+  }
+
+  uniformLocation(uniformName) {
+    return this.glContext.getUniformLocation(this.program, uniformName);
   }
 }
 
@@ -105,11 +109,11 @@ class GLArrayBuffer {
     this.glContext.deleteBuffer(this.buffer);
   }
 
-  clear() {
+  clearData() {
     this.array = [];
   }
 
-  push(data) {
+  pushData(data) {
     if(data instanceof Number) {
       this.array.push(data);
     }
@@ -120,7 +124,7 @@ class GLArrayBuffer {
     }
   }
 
-  pop(size = 1) {
+  popData(size = 1) {
     this.array.pop(size);
   }
 
@@ -181,12 +185,7 @@ class GLRenderer {
     this.viewportWidth = width;
     this.viewportHeight = height;
   }
-
-  attachProgram(program) {
-
-    this.program = program;
-  }
-
+  
   attachBuffer(buffer) {
     this.buffers.push(buffer);
   }
@@ -200,10 +199,6 @@ class GLRenderer {
 
     this.glContext.clearColor(0, 0, 0, 0);
     this.glContext.clear(this.glContext.COLOR_BUFFER_BIT);
-
-    if (this.program) {
-      this.program.use();
-    }
 
     let count = 0
 

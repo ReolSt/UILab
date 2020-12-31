@@ -8,46 +8,35 @@
 
 <body>
   <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
-    layout (location = 0) in vec3 aPosition;
-    layout (location = 1) in vec4 aColor;
+    uniform mat4 cameraMatrix;
 
-    out vec4 vColor;
+    layout (location = 0) in vec3 position;
+    layout (location = 1) in vec4 color;
+
+    out vec4 vertexColor;
 
     void main() {
-      gl_Position = vec4(aPosition, 1.0);
-      vColor = aColor;
+      gl_Position = vec4(position, 1.0) * cameraMatrix;
+      vertexColor = color;
     }
   </script>
   <script id="fragment-shader" type="x-shader/x-vertex">#version 300 es
     precision highp float;
 
-    in vec4 vColor;
+    in vec4 vertexColor;
 
     out vec4 fragColor;
 
     void main() {
-      fragColor = vColor;
+      fragColor = vertexColor;
     }
   </script>
-  <div class="main flex">
-    <div class="sorting-visualizer flex">
-      <div class="visualizer flex">
+  <div class="main">
+    <div class="visualizer">
         <canvas id="canvas-visualizer"></canvas>
       </div>
-      <div class="graph flex">
-        <div id="graph-a" class="graph-container">
-          <canvas id="canvas-graph-a"></canvas>
-        </div>
-        <div id="graph-b" class="graph-container">
-          <canvas id="canvas-graph-b"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="ui flex">
-    </div>
   </div>
   <script defer src="js/math.js"></script>
-  <script defer src="js/shader.js"></script>
   <script defer src="js/gl.js"></script>
   <script defer src="js/main.js"></script>
 </body>
