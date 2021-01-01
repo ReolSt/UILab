@@ -136,7 +136,7 @@ class GLArrayBuffer {
     this.array = array;
   }
 
-  render() {
+  write() {
     this.glContext.enableVertexAttribArray(this.index);
     this.glContext.bindBuffer(this.glContext.ARRAY_BUFFER, this.buffer);
 
@@ -177,6 +177,36 @@ class GLRenderer {
     if(object.offset) {
       this.offset = object.offset;
     }
+
+    if(object.program) {
+      this.program = object.program;
+    }
+
+    if(object.shaders) {
+      this.program = new GLProgram({
+        glContext: this.glContext,
+        shaders: object.shaders
+      });
+    }
+
+    if(object.vertexShaderSource && object.fragmentShaderSource) {
+      let vertexShader = new GLShader({
+        glContext: this.glContext,
+        type: this.glContext.VERTEX_SHADER,
+        source: object.vertexShaderSource
+      });
+
+      let fragmentShader = new GLShader({
+        glContext: this.glContext,
+        type: this.glContext.FRAGMENT_SHADER,
+        source: object.fragmentShaderSource
+      });
+
+      this.program = new GLProgram({
+        glContext: this.glContext,
+        shaders: [vertexShader, fragmentShader]
+      });
+    }
   }
 
   setViewport(x, y, width, height) {
@@ -194,19 +224,28 @@ class GLRenderer {
     this.buffers.splice(index, 1);
   }
 
-  render() {
+  useProgram(program) {
+    this.program = program;
+    program.use();
+  }
+
+  render(beforeDraw) {
     this.glContext.viewport(0, 0, this.glContext.canvas.width, this.glContext.canvas.height);
 
     this.glContext.clearColor(0, 0, 0, 0);
     this.glContext.clear(this.glContext.COLOR_BUFFER_BIT);
 
-    let count = 0
+    this.program.use();
+
+    beforeDraw(this.program, this.buffers);
+
+    let count = 0;
 
     this.buffers.forEach(buffer => {
-      if(buffer.index == 0) {
+      if(buffer.index === 0) {
         count = buffer.array.length / buffer.size;
       }
-      buffer.render();
+      buffer.write();
     });
 
     visualizer.drawArrays(

@@ -5,33 +5,10 @@ let visualizer = visualizerCanvas.getContext("webgl2");
 visualizerCanvas.width = visualizerCanvas.clientWidth;
 visualizerCanvas.height = visualizerCanvas.clientHeight;
 
-let elementCount = 100;
-
-let randomArray = getRandomArray_Integer(1, 1000, 1000);
-
-let timeStep = 5; /* milliseconds */
-let heightOffset = 50; /* px */
-
 let renderer = new GLRenderer({
-  glContext: visualizer
-});
-
-let vertexShader = document.getElementById("vertex-shader");
-vertexShader = new GLShader({
   glContext: visualizer,
-  type: visualizer.VERTEX_SHADER,
-  source: document.getElementById("vertex-shader").innerText
-});
-
-let fragmentShader = new GLShader({
-  glContext: visualizer,
-  type: visualizer.FRAGMENT_SHADER,
-  source: document.getElementById("fragment-shader").innerText
-});
-
-let mainProgram = new GLProgram({
-  glContext: visualizer,
-  shaders: [vertexShader, fragmentShader]
+  vertexShaderSource: document.getElementById("vertex-shader").innerText,
+  fragmentShaderSource: document.getElementById("fragment-shader").innerText
 });
 
 let vertexBuffer = new GLArrayBuffer({
@@ -92,15 +69,24 @@ document.body.addEventListener("keyup", event => {
 
 let sensitivity = 0.001;
 
+let mouseButtons = {};
+
+document.body.addEventListener("mousedown", event => {
+  mouseButtons[event.button] = true;
+})
+
 document.body.addEventListener("mousemove", event => {
-  if(event.button == 0) {
-    console.log(event);
-    cameraMatrix[0][3] -= sensitivity * event.movementX;
-    cameraMatrix[1][3] += sensitivity * event.movementY;
+  if(mouseButtons[0] === true) {
+    cameraMatrix[0][3] += sensitivity * event.movementX;
+    cameraMatrix[1][3] -= sensitivity * event.movementY;
   }
 });
 
-let renderloop = setInterval(() => {
+document.body.addEventListener("mouseup", event => {
+  mouseButtons[event.button] = false;
+});
+
+function handleKeyboardEvent() {
   if(keys["w"]) {
     cameraMatrix[1][3] -= 0.01;
   }
@@ -124,17 +110,18 @@ let renderloop = setInterval(() => {
     cameraMatrix[1][1] += 0.01;
     cameraMatrix[2][2] += 0.01;
   }
+}
 
-  mainProgram.use();
+let renderloop = setInterval(() => {
+  handleKeyboardEvent();
 
-  visualizer.uniformMatrix4fv(
-    mainProgram.uniformLocation("cameraMatrix"),
-    false,
-    new Float32Array(getFlattenArray(cameraMatrix))
-  );
-
-  vertexBuffer.setBuffer(triangleVertexes);
-  colorBuffer.setBuffer(triangleColors);
-
-  renderer.render();
+  renderer.render((program, buffers) => {
+    visualizer.uniformMatrix4fv(
+      program.uniformLocation("cameraMatrix"),
+      false,
+      new Float32Array(getFlattenArray(cameraMatrix))
+    );
+    buffers[0].setBuffer(triangleVertexes);
+    buffers[1].setBuffer(triangleColors);
+  });
 }, 33);

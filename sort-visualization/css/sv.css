@@ -27,9 +27,7 @@ body {
 .visualizer {
   width: 100%;
   height: 100%;
-  border-radius: 15px;
   background: black;
-  transition: 0.5s;
 }
 
 canvas {
