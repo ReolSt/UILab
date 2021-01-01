@@ -168,7 +168,7 @@ class GLRenderer {
     this.drawType = this.glContext.TRIANGLES;
     this.offset = 0;
 
-    this.buffers = [];
+    this.buffers = {};
 
     if(object.drawType) {
       this.drawType = object.drawType;
@@ -216,12 +216,12 @@ class GLRenderer {
     this.viewportHeight = height;
   }
   
-  attachBuffer(buffer) {
-    this.buffers.push(buffer);
+  attachBuffer(id, buffer) {
+    this.buffers[id] = buffer;
   }
 
-  detachBuffer(index) {
-    this.buffers.splice(index, 1);
+  detachBuffer(id) {
+    this.buffers[id] = undefined;
   }
 
   useProgram(program) {
@@ -241,11 +241,9 @@ class GLRenderer {
 
     let count = 0;
 
-    this.buffers.forEach(buffer => {
-      if(buffer.index === 0) {
-        count = buffer.array.length / buffer.size;
-      }
-      buffer.write();
+    Object.values(this.buffers).forEach(buffer => {
+      count = buffer.array.length / buffer.size;
+      buffer.write()
     });
 
     visualizer.drawArrays(

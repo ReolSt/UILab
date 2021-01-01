@@ -5,50 +5,24 @@ let visualizer = visualizerCanvas.getContext("webgl2");
 visualizerCanvas.width = visualizerCanvas.clientWidth;
 visualizerCanvas.height = visualizerCanvas.clientHeight;
 
-let renderer = new GLRenderer({
+let objectRenderer = new GLObjectRenderer({
   glContext: visualizer,
   vertexShaderSource: document.getElementById("vertex-shader").innerText,
   fragmentShaderSource: document.getElementById("fragment-shader").innerText
 });
 
-let vertexBuffer = new GLArrayBuffer({
-  glContext: visualizer,
-  size: 3,
-  index: 0,
-  normalize: false,
-  stride: 0,
-  offset: 0
-});
-
-let colorBuffer = new GLArrayBuffer({
-  glContext: visualizer,
-  size: 4,
-  index: 1,
-  normalize: false,
-  stride: 0,
-  offset: 0
-});
-
-renderer.attachBuffer(vertexBuffer);
-renderer.attachBuffer(colorBuffer);
-
-let triangleVertexes = [
-  0, 0.1, 0,
-  0.5, 0, 0.5,
-  0, 0.5, 0.5,
-  0.4, 0.2, 0.1,
-  0.6, 0.6, 0.4,
-  0.8, 0.8, 0.6
-];
-
-let triangleColors = [
-  1, 1, 0, 1,
-  0, 1, 0, 1,
-  1, 0, 0, 1,
-  1, 0, 0, 1,
-  0, 1, 1, 1,
-  0, 0, 1, 1
-];
+objectRenderer.addObject("triangle", new GLTriangle(
+  [
+    [0, 0.1, 0],
+    [0.5, 0, 0.5],
+    [0, 0.5, 0.5]
+  ],
+  [
+    [1, 1, 0],
+    [0, 1, 0],
+    [1, 0, 0]
+  ]
+));
 
 let cameraMatrix = [
   [1, 0, 0, 0],
@@ -115,13 +89,11 @@ function handleKeyboardEvent() {
 let renderloop = setInterval(() => {
   handleKeyboardEvent();
 
-  renderer.render((program, buffers) => {
+  objectRenderer.render((program, buffers) => {
     visualizer.uniformMatrix4fv(
       program.uniformLocation("cameraMatrix"),
       false,
       new Float32Array(getFlattenArray(cameraMatrix))
     );
-    buffers[0].setBuffer(triangleVertexes);
-    buffers[1].setBuffer(triangleColors);
   });
 }, 33);

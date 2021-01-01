@@ -76,3 +76,21 @@ function getFlattenArray(array) {
   
   return flattenArray;
 }
+
+function padArray(array, padSize, padValues = []) {
+  let paddedArray = [...array];
+
+  for(let i = array.length; i < padSize; ++i) {
+    paddedArray.push(padValues[i]);
+  }
+  
+  return paddedArray;
+}
+
+function shrinkArray(array, size) {
+    if(size > array.length) {
+        return [...array];
+    }
+    
+    return [...array].slice(size);
+}

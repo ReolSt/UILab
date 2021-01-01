@@ -1,6 +1,9 @@
 class GLObjectRenderer {
   constructor(object) {
-    this.webglRenderer = new GLRenderer(object);
+    this.glContext = object.glContext;
+    object.drawType = this.glContext.TRIANGLES_FAN;
+
+    this.glRenderer = new GLRenderer(object);
 
     this.vertexBuffer = new GLArrayBuffer({
       glContext: this.glContext,
@@ -20,25 +23,27 @@ class GLObjectRenderer {
       offset: 0
     });
 
-    webglRenderer.attachBuffer(vertexBuffer);
-    webglRenderer.attachBuffer(colorBuffer);
+    this.glRenderer.attachBuffer("vertex", this.vertexBuffer);
+    this.glRenderer.attachBuffer("color", this.colorBuffer);
 
-    this.objects = [];
+    this.objects = {};
   }
 
-  addObject(object) {
-    this.objects.push(object);
+  addObject(id, object) {
+    this.objects[id] = object;
   }
 
-  removeObject(index) {
-    this.objects.splice(index, 1);
+  removeObject(id) {
+    this.objects[id] = undefined;
   }
   
-  render(beforeDraw) {
-    beforeDraw(this.program, this.objects);
-
-    this.GLRenderer.render((program, buffers) => {
-      
+  render(beforeDraw) {    
+    Object.values(this.objects).forEach(object => {
+      this.glRenderer.render((program, buffers) => {
+        beforeDraw(program, this.objects);
+        buffers["vertex"].setBuffer(getFlattenArray(object.vertices));
+        buffers["color"].setBuffer(getFlattenArray(object.colors));
+      });
     });
   }
 }
