@@ -63,38 +63,20 @@ class GLProgram {
 }
 
 class GLArrayBuffer {
-  constructor(object) {
+  constructor(object = {
+    index: 0,
+    size: 3,
+    normalize: false,
+    stride: 0,
+    offset: 0
+  }) {
     this.glContext = object.glContext;
-    this.index = 0;
-    this.size = 3;
-    this.type = this.glContext.FLOAT;
-    this.normalize = false;
-    this.stride = 0;
-    this.offset = 0;
-
-    if (object.index) {
-      this.index = object.index;
-    }
-
-    if (object.size) {
-      this.size = object.size;
-    }
-
-    if (object.type) {
-      this.type = object.type;
-    }
-
-    if (object.normalize) {
-      this.normalize = object.normalize;
-    }
-
-    if (object.strided) {
-      this.stride = object.stride;
-    }
-
-    if (object.offset) {
-      this.offset = object.offset;
-    }
+    this.index = object.index;
+    this.size = object.size;
+    this.type = object.type === undefined ? this.glContext.FLOAT : object.type;
+    this.normalize = object.normalize;
+    this.stride = object.stride;
+    this.offset = object.offset;
 
     this.buffer = this.glContext.createBuffer();
     this.array = [];
@@ -140,10 +122,32 @@ class GLArrayBuffer {
     this.glContext.enableVertexAttribArray(this.index);
     this.glContext.bindBuffer(this.glContext.ARRAY_BUFFER, this.buffer);
 
-    visualizer.bufferData(
-      visualizer.ARRAY_BUFFER,
-      new Float32Array(this.array),
-      visualizer.STATIC_DRAW
+    let dataArray = function(type) {
+      if(type === this.glContext.BYTE) {
+        return new Int8Array(this.array);
+      }
+      if(type === this.glContext.UNSIGNED_BYTE) {
+        return new Uint8Array(this.array);
+      }
+      if(type === this.glContext.SHORT) {
+        return new Int16Array(this.array);
+      }
+      if(type === this.glContext.UNSIGNED_SHORT) {
+        return new Uint16Array(this.array);
+      }
+      if(type === this.glContext.INT) {
+        return new Int32Array(this.array);
+      }
+      if(type === this.glContext.UNSIGNED_INT) {
+        return new Uint32Array(this.array);
+      }
+      return new Float32Array(this.array);
+    }.bind(this)(this.type);
+
+    this.glContext.bufferData(
+      this.glContext.ARRAY_BUFFER,
+      dataArray,
+      this.glContext.STATIC_DRAW
     );
 
     this.glContext.vertexAttribPointer(
@@ -158,38 +162,32 @@ class GLArrayBuffer {
 }
 
 class GLRenderer {
-  constructor(object) {
+  constructor(object = {
+    viewportX: 0,
+    viewportY: 0,
+    offset: 0
+  }) {
     this.glContext = object.glContext;
     this.viewportX = 0;
     this.viewportY = 0;
     this.viewportWidth = this.glContext.canvas.width;
     this.viewportHeight = this.glContext.canvas.height;
 
-    this.drawType = this.glContext.TRIANGLES;
-    this.offset = 0;
+    this.drawType = object.drawType === undefined ? this.glContext.TRIANGLES : object.drawType;
+    this.offset = object.offset;
 
     this.buffers = {};
-
-    if(object.drawType) {
-      this.drawType = object.drawType;
-    }
-
-    if(object.offset) {
-      this.offset = object.offset;
-    }
 
     if(object.program) {
       this.program = object.program;
     }
-
-    if(object.shaders) {
+    else if(object.shaders) {
       this.program = new GLProgram({
         glContext: this.glContext,
         shaders: object.shaders
       });
     }
-
-    if(object.vertexShaderSource && object.fragmentShaderSource) {
+    else if(object.vertexShaderSource && object.fragmentShaderSource) {
       let vertexShader = new GLShader({
         glContext: this.glContext,
         type: this.glContext.VERTEX_SHADER,
@@ -207,6 +205,9 @@ class GLRenderer {
         shaders: [vertexShader, fragmentShader]
       });
     }
+    else {
+      console.warn("GLRenderer: No program attached at constructing.");
+    }
   }
 
   setViewport(x, y, width, height) {
@@ -223,17 +224,26 @@ class GLRenderer {
   detachBuffer(id) {
     this.buffers[id] = undefined;
   }
+  
+  attachProgram(program) {
+    this.program = program;
+  }
 
   useProgram(program) {
     this.program = program;
     program.use();
   }
-
-  render(beforeDraw) {
+  
+  render(beforeDraw, renderMode = "clear" /* clear, overlay */) {
     this.glContext.viewport(0, 0, this.glContext.canvas.width, this.glContext.canvas.height);
 
-    this.glContext.clearColor(0, 0, 0, 0);
-    this.glContext.clear(this.glContext.COLOR_BUFFER_BIT);
+    if(renderMode === "clear") {
+      this.glContext.clear(
+        this.glContext.COLOR_BUFFER_BIT |
+        this.glContext.DEPTH_BUFFER_BIT |
+        this.glContext.STENCIL_BUFFER_BIT
+      );
+    }
 
     this.program.use();
 

@@ -55,3 +55,19 @@ function GLPadOrShrinkVectors4(vectors, padValues) {
     return GLPadOrShrinkVector4(vector, padValues);
   });
 }
+
+function GLTranslateColor(colorString) {
+  let color = [0.0, 0.0, 0.0, 0.0];
+  
+  if(colorString.startWith("#")) {
+
+  }
+  if(colorString.startWith("rgb")) {
+    colorString.split(",")
+  }
+  if(colorString.startWith("hsl")) {
+
+  }
+
+  return color;
+}

@@ -92,5 +92,5 @@ function shrinkArray(array, size) {
         return [...array];
     }
     
-    return [...array].slice(size);
+    return [...array].slice(0, size);
 }
