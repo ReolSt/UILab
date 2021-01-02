@@ -1,9 +1,7 @@
 class GLTriangle {
   constructor(vertices, colors) {
     this.vertices = shrinkArray(GLPadVectors4(vertices), 3);
-    this.color
     this.colors = shrinkArray(GLPadVectors4(colors, [0, 0, 0, 255]), 3);
-    console.log(this.vertices, this.colors);
   }
 }
 
