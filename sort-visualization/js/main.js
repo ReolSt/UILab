@@ -13,64 +13,45 @@ let objectRenderer = new GLObjectRenderer({
   fragmentShaderSource: document.getElementById("fragment-shader").innerText
 });
 
-objectRenderer.addObject("triangle", new GLTriangle(
-  [
-    [0, 0.1, 0],
-    [0.5, 0, 0],
-    [0, 0.5, 0]
-  ],
-  [
-    [255, 255, 255],
-    [255, 255, 255],
-    [255, 255, 255]
-  ]
-));
-
-objectRenderer.addObject("rectangle", new GLRectangle(
+objectRenderer.addObject("background-0", new GLRectangle(
   [
     [0, 0, 0],
-    [-0.25, -1, 0],
-    [-0.5, -0.25, 0],
-    [-0.5, 0, 0]
+    [0.5, 0, 0],
+    [0, 0.5, 0],
+    [0.5, 0.5, 0]
   ],
-  [
-    [255, 0, 255],
-    [255, 122, 233],
-    [255, 255, 255],
-    [255, 255, 255]
-  ]
+  [255, 255, 255]
 ));
 
-objectRenderer.addObject("pentagon", new GLPentagon(
+objectRenderer.addObject("background-1", new GLRectangle(
   [
-    [0.5, 0.5, 0.5],
-    [0.7, 0.7, 0.5],
-    [0.6, 1.0, 0.5],
-    [0.4, 1.0, 0.5],
-    [0.3, 0.7, 0.5]
+    [0, 0, 0.5],
+    [0.5, 0, 0.5],
+    [0, 0.5, 0.5],
+    [0.5, 0.5, 0.5]
   ],
-  [
-    [255, 0, 255],
-    [255, 3, 233],
-    [255, 3, 255],
-    [2, 255, 255],
-    [255, 255, 255]
-  ]
+  [255, 0, 255]
 ));
 
-let moveMatrix = [
-  [1, 0, 0, 0],
-  [0, 1, 0, 0],
-  [0 ,0, 1, 0],
-  [0, 0, 0, 1]
-];
+objectRenderer.addObject("background-2", new GLRectangle(
+  [
+    [0.5, 0, 0],
+    [0.5, 0.5, 0],
+    [0.5, 0, 0.5],
+    [0.5, 0.5, 0.5]
+  ],
+  [0, 0, 255]
+));
 
-let rotateMatrix = [
-  [1, 0, 0, 0],
-  [0, 1, 0, 0],
-  [0 ,0, 1, 0],
-  [0, 0, 0, 1]
-];
+objectRenderer.addObject("background-3", new GLRectangle(
+  [
+    [0, 0, 0.5],
+    [0, 0.5, 0],
+    [0, 0, 0.5],
+    [0, 0.5, 0.5]
+  ],
+  [255, 0, 0]
+));
 
 function updateRotateMatrix() {
   let sinX = Math.sin(rotateX), cosX = Math.cos(rotateX);
@@ -123,7 +104,7 @@ document.body.addEventListener("keyup", event => {
   keys[event.key] = false;
 });
 
-let sensitivity = 0.001;
+let sensitivity = 0.002;
 
 let mouseButtons = {};
 
@@ -133,23 +114,21 @@ document.body.addEventListener("mousedown", event => {
 
 document.body.addEventListener("mousemove", event => {
   if(mouseButtons[0] === true) {
-    moveMatrix[3][2] += sensitivity * event.movementX;
-    moveMatrix[3][2] -= sensitivity * event.movementY;
+    cameraPan += sensitivity * event.movementX;
+    cameraTilt += sensitivity * event.movementY;
+    updateCameraRotateMatrix();
   }
 
   if(mouseButtons[1] === true) {
-    rotateY += sensitivity * 2 * event.movementX;
+    rotateY += sensitivity * event.movementX;
     updateRotateMatrix();
   }
 
   if(mouseButtons[2] === true) {
-    rotateX += sensitivity * 2 * event.movementY;
-    rotateZ += sensitivity * 2 * event.movementX;
+    rotateX += sensitivity * event.movementY;
+    rotateZ += sensitivity * event.movementX;
     updateRotateMatrix();
   }
-
-  cameraPan += sensitivity * event.movementX;
-  cameraTilt += sensitivity * event.movementY;
 });
 
 document.body.addEventListener("mouseup", event => {
@@ -158,14 +137,10 @@ document.body.addEventListener("mouseup", event => {
 
 document.body.addEventListener("wheel", event => {
   if(event.deltaY > 0) {
-    moveMatrix[0][0] -= 0.05;
-    moveMatrix[1][1] -= 0.05;
-    moveMatrix[2][2] -= 0.05;
+    cameraPosition[1] -= 0.05;
   }
   else if(event.deltaY < 0) {
-    moveMatrix[0][0] += 0.05;
-    moveMatrix[1][1] += 0.05;
-    moveMatrix[2][2] += 0.05;
+    cameraPosition[1] += 0.05;
   }
 });
 
@@ -175,16 +150,16 @@ let rotateZ = 0;
 
 function handleKeyboardEvent() {
   if(keys["w"]) {
-    moveMatrix[1][3] -= 0.05;
+    cameraPosition[2] -= 0.05;
   }
   if(keys["a"]) {
-    moveMatrix[0][3] += 0.05;
+    cameraPosition[0] -= 0.05;
   }
   if(keys["s"]) {
-    moveMatrix[1][3] += 0.05;
+    cameraPosition[2] += 0.05;
   }
   if(keys["d"]) {
-    moveMatrix[0][3] -= 0.05;
+    cameraPosition[0] += 0.05;
   }
 }
 
@@ -199,10 +174,11 @@ let renderloop = setInterval(() => {
       cameraPosition[2]
     )
 
-    visualizer.uniformMatrix4fv(
-      program.uniformLocation("rotateMatrix"),
+    visualizer.uniformMatrix3fv(
+      program.uniformLocation("cameraRotationMatrix"),
       false,
       new Float32Array(getFlattenArray(cameraRotationMatrix))
     );
   });
+  console.log(cameraPan, cameraTilt);
 }, 33);

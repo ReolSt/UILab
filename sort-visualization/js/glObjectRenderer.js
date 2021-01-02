@@ -1,7 +1,7 @@
 class GLObjectRenderer {
   constructor(object) {
     this.glContext = object.glContext;
-    object.drawType = this.glContext.TRIANGLE_FAN;
+    object.drawType = this.glContext.TRIANGLE_STRIP;
 
     this.glRenderer = new GLRenderer(object);
 

@@ -4,6 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" type="text/css" href="css/sv.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.2.1/math.js"></script>
 </head>
 
 <body>
@@ -17,7 +18,7 @@
     out vec4 vertexColor;
 
     void main() {
-      gl_Position = vec4(cameraRotationMatrix * (position - cameraPosition), 1.0);
+      gl_Position = vec4((position - cameraPosition) * cameraRotationMatrix, 1.0);
       vertexColor = color;
     }
   </script>
