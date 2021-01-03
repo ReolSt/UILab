@@ -10,7 +10,7 @@
 <body>
   <script id="vertex-shader" type="x-shader/x-vertex">#version 300 es
     uniform vec3 cameraPosition;
-    uniform mat3 cameraRotationMatrix;
+    uniform mat4 cameraRotationMatrix;
 
     layout (location = 0) in vec3 position;
     layout (location = 1) in vec4 color;
@@ -18,7 +18,7 @@
     out vec4 vertexColor;
 
     void main() {
-      gl_Position = vec4((position - cameraPosition) * cameraRotationMatrix, 1.0);
+      gl_Position = vec4((position - cameraPosition), 1.0) * cameraRotationMatrix;
       vertexColor = color;
     }
   </script>
