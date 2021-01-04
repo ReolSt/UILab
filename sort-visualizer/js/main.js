@@ -1,5 +1,5 @@
-import * as THREE from "../three/three.module.js"
-import { FirstPersonControls } from "../three/jsm/controls/FirstPersonControls.js"
+import * as THREE from "../three/build/three.module.js"
+import { FirstPersonControls } from "../three/examples/jsm/controls/FirstPersonControls.js"
 
 document.oncontextmenu = () => { return false; }
 
@@ -30,29 +30,19 @@ window.addEventListener("resize", event => {
   playerCamera.aspect = renderer.domElement.width / renderer.domElement.height;
 });
 
-var camControls = new FirstPersonControls(playerCamera);
-camControls.lookSpeed = 0.4;
-camControls.movementSpeed = 20;
-camControls.noFly = true;
-camControls.lookVertical = true;
-camControls.constrainVertical = true;
-camControls.verticalMin = 1.0;
-camControls.verticalMax = 2.0;
-camControls.lon = -150;
-camControls.lat = 120;
-
 let mainScene = new THREE.Scene();
 
 let plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(1, 2),
-  new THREE.MeshLambertMaterial({ color: "#26c728" })
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshToonMaterial({ color: "#26c728" })
 );
-plane.position.set(0, 0, -3);
+plane.position.set(3, 1, -3);
+plane.rotateX(THREE.MathUtils.degToRad(90));
 mainScene.add(plane);
 
 let cube = new THREE.Mesh(
   new THREE.BoxGeometry(0.5, 0.5, 0.5),
-  new THREE.MeshLambertMaterial({ color: "#2e97f2" })
+  new THREE.MeshToonMaterial({ color: "#2e97f2" })
 );
 cube.position.set(0, 0, -2);
 mainScene.add(cube);
@@ -93,7 +83,14 @@ function jump() {
   }
 }
 
+let clock = new THREE.Clock();
+
 function render() {
+  let delta = clock.getDelta();
+
+  let cameraQuaternion = playerCamera.quaternion;
+
+  console.log(new THREE.Vector3().applyQuaternion(cameraQuaternion));
   if (keys["w"]) {
     playerCamera.position.z -= moveSpeed;
   }
