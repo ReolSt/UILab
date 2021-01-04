@@ -4,11 +4,14 @@ import { FirstPersonControls } from "../three/examples/jsm/controls/FirstPersonC
 document.oncontextmenu = () => { return false; }
 
 let visualizerCanvas = document.getElementById("canvas-visualizer");
-
 let visualizer = visualizerCanvas.getContext("webgl2");
 
 visualizerCanvas.width = visualizerCanvas.clientWidth;
 visualizerCanvas.height = visualizerCanvas.clientHeight;
+
+document.body.requestPointerLock = document.body.requestPointerLock ||
+                                   document.body.element.mozRequestPointerLock ||
+                                   document.body.webkitRequestPointerLock;
 
 let renderer = new THREE.WebGLRenderer({
   canvas: visualizerCanvas,
@@ -17,6 +20,7 @@ let renderer = new THREE.WebGLRenderer({
 renderer.setSize(visualizer.canvas.width, visualizer.canvas.height);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 
 let playerCamera = new THREE.PerspectiveCamera(...Object.values({
   fov: 90,
@@ -32,12 +36,28 @@ window.addEventListener("resize", event => {
 
 let mainScene = new THREE.Scene();
 
+let xLineGeometry = new THREE.Geometry();
+xLineGeometry.vertices.push(
+  new THREE.Vector3(1, 0, 0),
+  new THREE.Vector3(-1, 0, 0)
+);
+
+let xAxis = new THREE.Mesh(
+  xLineGeometry,
+  new THREE.LineBasicMaterial({
+    color: "#FFFFFF",
+    lineWidth: 5
+  })
+);
+mainScene.add(xAxis);
+
 let plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(20, 20),
+  new THREE.BoxGeometry(20, 20, 2),
   new THREE.MeshToonMaterial({ color: "#26c728" })
 );
-plane.position.set(3, 1, -3);
+plane.position.set(0, -2, 0);
 plane.rotateX(THREE.MathUtils.degToRad(90));
+
 mainScene.add(plane);
 
 let cube = new THREE.Mesh(
@@ -45,6 +65,7 @@ let cube = new THREE.Mesh(
   new THREE.MeshToonMaterial({ color: "#2e97f2" })
 );
 cube.position.set(0, 0, -2);
+cube.frustrumCulled = false;
 mainScene.add(cube);
 
 let light = new THREE.DirectionalLight("#FFFFFF", 2);
@@ -66,8 +87,14 @@ document.body.addEventListener("keyup", event => {
 
 let mouseSensitivity = 0.005;
 
+document.body.addEventListener("click", event => {
+  document.body.requestPointerLock();
+});
 
-document.body.addEventListener("mousemove", event => {});
+document.body.addEventListener("mousemove", event => {
+  playerCamera.rotation.y -= mouseSensitivity * event.movementX;
+  playerCamera.rotation.x = THREE.MathUtils.clamp(-Math.PI / 4, playerCamera.rotation.x - mouseSensitivity * event.movementY, Math.PI / 3);
+});
 
 let moveSpeed = 0.01;
 
@@ -87,25 +114,29 @@ let clock = new THREE.Clock();
 
 function render() {
   let delta = clock.getDelta();
-
-  let cameraQuaternion = playerCamera.quaternion;
-
-  console.log(new THREE.Vector3().applyQuaternion(cameraQuaternion));
   if (keys["w"]) {
-    playerCamera.position.z -= moveSpeed;
+    playerCamera.position.z -= moveSpeed * Math.cos(playerCamera.rotation.y);
+    playerCamera.position.x -= moveSpeed * Math.sin(playerCamera.rotation.y);
   }
   if (keys["s"]) {
-    playerCamera.position.z += moveSpeed;
+    playerCamera.position.z += moveSpeed * Math.cos(playerCamera.rotation.y);
+    playerCamera.position.x += moveSpeed * Math.sin(playerCamera.rotation.y);
   }
   if (keys["a"]) {
-    playerCamera.position.x -= moveSpeed;
+    playerCamera.position.x -= moveSpeed * Math.cos(playerCamera.rotation.y);
+    playerCamera.position.z += moveSpeed * Math.sin(playerCamera.rotation.y);
   }
   if (keys["d"]) {
-    playerCamera.position.x += moveSpeed;
+    playerCamera.position.x += moveSpeed * Math.cos(playerCamera.rotation.y);
+    playerCamera.position.z -= moveSpeed * Math.sin(playerCamera.rotation.y);
   }
 
   if (keys[" "] && !jumpAnimation) {
     jumpAnimation = true;
+  }
+
+  if (keys["Escape"]) {
+    document.exitPointerLock();
   }
 
   if (jumpAnimation) {
