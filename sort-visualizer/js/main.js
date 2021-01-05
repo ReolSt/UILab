@@ -1,5 +1,6 @@
-import * as THREE from "../three/build/three.module.js"
-import { FirstPersonControls } from "../three/examples/jsm/controls/FirstPersonControls.js"
+import * as THREE from "../three/build/three.module.js";
+import Stats from '../three/examples/jsm/libs/stats.module.js';
+import GUI from '../three/examples/jsm/libs/dat.gui.module.js';
 
 document.oncontextmenu = () => { return false; }
 
@@ -28,6 +29,7 @@ let playerCamera = new THREE.PerspectiveCamera(...Object.values({
   near: 0.1,
   far: 10000
 }));
+playerCamera.rotation.order = "YXZ";
 playerCamera.position.set(0, 0, 1);
 
 window.addEventListener("resize", event => {
@@ -36,44 +38,44 @@ window.addEventListener("resize", event => {
 
 let mainScene = new THREE.Scene();
 
-let xLineGeometry = new THREE.Geometry();
-xLineGeometry.vertices.push(
-  new THREE.Vector3(1, 0, 0),
-  new THREE.Vector3(-1, 0, 0)
+let backgroundTextureLoader = new THREE.TextureLoader();
+let backgroundTexture = new THREE.TextureLoader().load(
+  "resources/images/background-equirectangular.png",
+  () => {
+    let renderTarget = new THREE.WebGLCubeRenderTarget(backgroundTexture.image.height);
+    renderTarget.fromEquirectangularTexture(renderer, backgroundTexture);
+    mainScene.background = renderTarget;
+  }
 );
 
-let xAxis = new THREE.Mesh(
-  xLineGeometry,
-  new THREE.LineBasicMaterial({
-    color: "#FFFFFF",
-    lineWidth: 5
-  })
-);
-mainScene.add(xAxis);
+{
+  let light = new THREE.DirectionalLight("#ffffbb", 1);
+  light.castShadow = true;
+  light.position.set(1, 4, 2);
+  mainScene.add(light);
+}
 
-let plane = new THREE.Mesh(
-  new THREE.BoxGeometry(20, 20, 2),
-  new THREE.MeshToonMaterial({ color: "#26c728" })
-);
-plane.position.set(0, -2, 0);
-plane.rotateX(THREE.MathUtils.degToRad(90));
+{
+  let plane = new THREE.Mesh(
+    new THREE.BoxGeometry(20, 20, 2),
+    new THREE.MeshToonMaterial({ color: "#26c728" })
+  );
+  plane.position.set(0, -2, 0);
+  plane.rotateX(THREE.MathUtils.degToRad(90));
 
-mainScene.add(plane);
+  mainScene.add(plane);
+}
 
-let cube = new THREE.Mesh(
-  new THREE.BoxGeometry(0.5, 0.5, 0.5),
-  new THREE.MeshToonMaterial({ color: "#2e97f2" })
-);
-cube.position.set(0, 0, -2);
-cube.frustrumCulled = false;
-mainScene.add(cube);
-
-let light = new THREE.DirectionalLight("#FFFFFF", 2);
-light.castShadow = true;
-light.position.set(1, 4, 2);
-mainScene.add(light);
-
-
+{
+  let cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshToonMaterial({ color: "#2e97f2" })
+  );
+  cube.frustrumCulled = false;
+  cube.renderOrder = 1;
+  cube.position.set(0, 0, -2);
+  mainScene.add(cube);
+}
 
 let keys = {};
 
@@ -92,28 +94,37 @@ document.body.addEventListener("click", event => {
 });
 
 document.body.addEventListener("mousemove", event => {
-  playerCamera.rotation.y -= mouseSensitivity * event.movementX;
   playerCamera.rotation.x = THREE.MathUtils.clamp(-Math.PI / 4, playerCamera.rotation.x - mouseSensitivity * event.movementY, Math.PI / 3);
+  playerCamera.rotation.y -= mouseSensitivity * event.movementX;
 });
 
-let moveSpeed = 0.01;
+let moveSpeed = 0.05;
 
 let jumpAnimation = false;
 let jumpAnimationKey = 0;
 
 function jump() {
-  playerCamera.position.y += (20 - jumpAnimationKey * 2) / 500;
+  playerCamera.position.y += (30 - jumpAnimationKey * 2) / 350;
   jumpAnimationKey += 1;
-  if (jumpAnimationKey > 20) {
+  if (jumpAnimationKey > 30) {
     jumpAnimation = false;
     jumpAnimationKey = 0;
   }
 }
 
-let clock = new THREE.Clock();
+
+let stats = new Stats();
+document.body.appendChild(stats.dom);
+
+/*
+
+let panel = new GUI({width: 310});
+
+let folderCamera = panel.addFolder("camera");
+
+*/
 
 function render() {
-  let delta = clock.getDelta();
   if (keys["w"]) {
     playerCamera.position.z -= moveSpeed * Math.cos(playerCamera.rotation.y);
     playerCamera.position.x -= moveSpeed * Math.sin(playerCamera.rotation.y);
@@ -144,6 +155,8 @@ function render() {
   }
 
   renderer.render(mainScene, playerCamera);
+
+  stats.update();
   requestAnimationFrame(render);
 }
 
