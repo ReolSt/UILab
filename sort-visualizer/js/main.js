@@ -67,7 +67,7 @@ mainScene.add(light);
 
 let plane = new THREE.Mesh(
   new THREE.BoxGeometry(20, 20, 2),
-  new THREE.MeshToonMaterial({ color: "#26c728" })
+  new THREE.MeshBasicMaterial({ color: "#26c728" })
 );
 plane.position.set(0, -2, 0);
 plane.rotateX(THREE.MathUtils.degToRad(90));
@@ -76,7 +76,7 @@ mainScene.add(plane);
 
 let sphere = new THREE.Mesh(
   new THREE.SphereGeometry(1, 32, 32),
-  new THREE.MeshToonMaterial({ color: "#2e97f2" })
+  new THREE.MeshBasicMaterial({ color: "#2e97f2" })
 );
 sphere.frustrumCulled = false;
 sphere.position.set(0, 0, -2);
@@ -144,18 +144,74 @@ function updateCameraValues() {
 }
 
 let lightControls = new function() {
-  this.x = light.x;
-  this.y = light.y;
-  this.z = light.z; 
+  this.x = light.position.x;
+  this.y = light.position.y;
+  this.z = light.position.z;
+};
+
+let folderLight = panel.addFolder("light");
+folderLight.add(lightControls, "x", -100, 100);
+folderLight.add(lightControls, "y", -100, 100);
+folderLight.add(lightControls, "z", -100, 100);
+folderLight.open();
+
+function updateLightValues() {
+  light.position.set(lightControls.x, lightControls.y, lightControls.z);
 }
 
 let sphereControls = new function() {
-  this.material = sphere.material.type;
-  this.radius = sphere.radius;
+  this.material = "Basic";
+};
+
+let folderSphere = panel.addFolder("sphere");
+folderSphere.add(sphereControls, "material", ["Basic", "Depth", "Distance", "Lambert", "Matcap", "Normal", "Phong", "Physical", "Standard", "Toon"]);
+folderSphere.open();
+
+sphere.frustrumCulled = false;
+sphere.frustumCulled = false;
+
+function updateSphereValues() {
+  switch(sphereControls.material) {
+    case "Basic":
+      sphere.material = new THREE.MeshBasicMaterial({ color: "#2e97f2" });
+      break;
+    case "Depth":
+      sphere.material = new THREE.MeshDepthMaterial();
+      break;
+    case "Distance":
+      sphere.material = new THREE.MeshDistanceMaterial();
+      break;
+    case "Lambert":
+      sphere.material = new THREE.MeshLambertMaterial({ color: "#2e97f2" });
+      break;
+    case "Matcap":
+      sphere.material = new THREE.MeshMatcapMaterial({ color: "#2e97f2" });
+      break;
+    case "Normal":
+      sphere.material = new THREE.MeshNormalMaterial();
+      break;
+    case "Phong":
+      sphere.material = new THREE.MeshPhongMaterial({ color: "#2e97f2" });
+      break;
+    case "Physical":
+      sphere.material = new THREE.MeshPhysicalMaterial({ color: "#2e97f2" });
+      break;
+    case "Standard":
+      sphere.material = new THREE.MeshStandardMaterial({ color: "#2e97f2" });
+      break;
+    case "Toon":
+      sphere.material = new THREE.MeshToonMaterial({ color: "#2e97f2" });
+      break;
+  }
 }
+
+mainScene.frustumCulled = false;
 
 function render() {
   updateCameraValues();
+  updateLightValues();
+  updateSphereValues();
+  
   if (keys["w"]) {
     playerCamera.position.z -= moveSpeed * Math.cos(playerCamera.rotation.y);
     playerCamera.position.x -= moveSpeed * Math.sin(playerCamera.rotation.y);
