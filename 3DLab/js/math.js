@@ -1,3 +1,5 @@
+'use strict';
+
 function getRandomValue_Integer(minValue, maxValue) {
     ++maxValue;
     return Math.floor(Math.random() * (maxValue - minValue) + minValue);
