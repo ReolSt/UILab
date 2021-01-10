@@ -10,7 +10,7 @@ export class IsometricControls extends Controls {
     super();
 
     this.camera = camera;
-    this.cameraHeight = 5;
+    this.cameraHeight = 10;
     this.camera.position.y = this.cameraHeight;
     this.camera.rotation.set(-Math.PI / 4, Math.PI / 4, 0);
 
@@ -18,15 +18,13 @@ export class IsometricControls extends Controls {
   }
 
   eventListeners = {
-    switch: event => {
+    switch: () => {
       this.camera.rotation.set(-Math.PI / 4, Math.PI / 4, 0);
       this.camera.position.y = this.cameraHeight;
     },
 
     mousedown: event => {
-      if(isPointerLocked) {
 
-      }
     },
 
     mouseup: event => {
@@ -34,6 +32,12 @@ export class IsometricControls extends Controls {
     },
 
     mousemove: event => {
+      if(isPointerLocked) {
+
+      }
+    },
+
+    wheel: event => {
 
     },
 

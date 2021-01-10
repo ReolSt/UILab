@@ -9,7 +9,7 @@ let mainCanvas = document.getElementById("canvas-main");
 mainCanvas.width = mainCanvas.clientWidth;
 mainCanvas.height = mainCanvas.clientHeight;
 
-export let renderer = new THREE.WebGLRenderer({
+let renderer = new THREE.WebGLRenderer({
   canvas: mainCanvas,
   antialias: true
 });
@@ -17,3 +17,5 @@ export let renderer = new THREE.WebGLRenderer({
 renderer.setSize(mainCanvas.width, mainCanvas.height);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+export { renderer };

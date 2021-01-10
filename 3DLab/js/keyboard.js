@@ -2,7 +2,7 @@ import { isPointerLocked } from "./mouse.js";
 
 'use strict';
 
-export let pressedKeys = {};
+let pressedKeys = {};
 
 document.body.addEventListener("keydown", event => {
   pressedKeys[event.key] = true;
@@ -15,3 +15,5 @@ document.body.addEventListener("keydown", event => {
 document.body.addEventListener("keyup", event => {
   pressedKeys[event.key] = false;
 });
+
+export { pressedKeys };

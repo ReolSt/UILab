@@ -5,7 +5,7 @@ import { Controls } from "./controls.js";
 
 'use strict';
 
-export class FPSControls extends Controls {
+class FPSControls extends Controls {
   constructor(camera) {
     super();
 
@@ -20,16 +20,13 @@ export class FPSControls extends Controls {
   }
 
   eventListeners = {
-    switch: event => {
+    switch: () => {
       this.camera.rotation.set(0, 0, 0);
       this.camera.position.y = 0;
     },
 
     mousedown: event => {
-      if(isPointerLocked) {
-        this.camera.rotation.x = THREE.MathUtils.clamp(-Math.PI / 4, this.camera.rotation.x - this.mouseSensitivity * event.movementY, Math.PI / 3);
-        this.camera.rotation.y -= this.mouseSensitivity * event.movementX;
-      }
+
     },
 
     mouseup: event => {
@@ -37,6 +34,13 @@ export class FPSControls extends Controls {
     },
 
     mousemove: event => {
+      if(isPointerLocked) {
+        this.camera.rotation.x = THREE.MathUtils.clamp(-Math.PI / 4, this.camera.rotation.x - this.mouseSensitivity * event.movementY, Math.PI / 3);
+        this.camera.rotation.y -= this.mouseSensitivity * event.movementX;
+      }
+    },
+
+    wheel: event => {
 
     },
 
@@ -89,3 +93,5 @@ export class FPSControls extends Controls {
     }
   }
 }
+
+export { FPSControls };

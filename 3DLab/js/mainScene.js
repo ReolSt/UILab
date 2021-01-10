@@ -3,6 +3,7 @@ import { renderer } from "./renderer.js";
 import { playerCamera } from "./camera.js";
 import { FPSControls } from "./fpsControls.js";
 import { IsometricControls } from "./isometricControls.js";
+import { Sky } from "./sky.js";
 import { debugStats, debugPanel } from "./debugGUI.js";
 
 'use strict';
@@ -19,14 +20,6 @@ function createEquirectangularTexture(renderer, imgSrc, callback) {
 }
 
 let mainScene = new THREE.Scene();
-
-createEquirectangularTexture(
-  renderer,
-  "resources/images/background-equirectangular.png",
-  renderTarget => {
-    mainScene.background = renderTarget;
-  }
-);
 
 let fpsControls = new FPSControls(playerCamera);
 let isometricControls = new IsometricControls(playerCamera);
@@ -48,12 +41,25 @@ function useControls(newControls) {
   newControls.eventListeners.switch();
 }
 
-useControls(fpsControls);
+// useControls(fpsControls);
 
-let light = new THREE.DirectionalLight("#ffffbb", 1);
-light.castShadow = true;
-light.position.set(1, 4, 2);
-mainScene.add(light);
+fpsControls.attach();
+fpsControls.eventListeners.switch();
+
+
+let sky = new Sky();
+
+console.log(sky.material.uniforms);
+
+sky.material.uniforms['turbidity'].value=10;
+sky.material.uniforms['rayleigh'].value=2;
+sky.material.uniforms['mieCoefficient'].value=0.005;
+sky.material.uniforms['mieDirectionalG'].value=0.8;
+sky.material.uniforms['sunPosition'].value.copy(new THREE.Vector3(0.5, 0.2, 0.5));
+
+sky.scale.setScalar(450000);
+mainScene.add(sky);
+
 
 let plane = new THREE.Mesh(
   new THREE.BoxGeometry(20, 20, 2),
@@ -76,7 +82,7 @@ let cameraControls = new function() {
   this.fov = playerCamera.fov;
   this.near = playerCamera.near;
   this.far = playerCamera.far;
-  this.view = "Isometric";
+  this.view = "FPS";
 };
 
 let folderCamera = debugPanel.addFolder("camera");
@@ -99,22 +105,6 @@ function updateCameraValues() {
       break;
   }
   playerCamera.updateProjectionMatrix();
-}
-
-let lightControls = new function() {
-  this.x = light.position.x;
-  this.y = light.position.y;
-  this.z = light.position.z;
-};
-
-let folderLight = debugPanel.addFolder("light");
-folderLight.add(lightControls, "x", -100, 100);
-folderLight.add(lightControls, "y", -100, 100);
-folderLight.add(lightControls, "z", -100, 100);
-folderLight.open();
-
-function updateLightValues() {
-  light.position.set(lightControls.x, lightControls.y, lightControls.z);
 }
 
 let sphereControls = new function() {
@@ -162,7 +152,6 @@ function updateSphereValues() {
 
 function render() {
   updateCameraValues();
-  updateLightValues();
   updateSphereValues();
 
   controls.eventListeners.keypressframe();

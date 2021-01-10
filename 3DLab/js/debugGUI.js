@@ -3,7 +3,9 @@ import { GUI } from '../three/examples/jsm/libs/dat.gui.module.js';
 
 'use strict';
 
-export let debugStats = new Stats();
+let debugStats = new Stats();
 document.body.appendChild(debugStats.dom);
 
-export let debugPanel = new GUI({width: 310});
+let debugPanel = new GUI({width: 310});
+
+export { debugStats, debugPanel };

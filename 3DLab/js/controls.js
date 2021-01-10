@@ -1,6 +1,6 @@
-export class Controls {
+class Controls {
   eventListeners = {
-    switch: event => {
+    switch: () => {
 
     },
 
@@ -16,6 +16,10 @@ export class Controls {
 
     },
 
+    wheel: event => {
+
+    },
+
     keydown: event => {
       
     },
@@ -28,7 +32,7 @@ export class Controls {
 
     },
 
-    keypressframe: event => {
+    keypressframe: () => {
 
     }
   }
@@ -45,3 +49,5 @@ export class Controls {
     });
   }
 }
+
+export { Controls };
