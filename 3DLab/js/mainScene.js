@@ -1,4 +1,5 @@
 import * as THREE from "../three/build/three.module.js";
+import "../cannon.js/build/cannon.min.js";
 import { renderer } from "./renderer.js";
 import { playerCamera } from "./camera.js";
 import { FPSControls } from "./fpsControls.js";
@@ -7,17 +8,6 @@ import { Sky } from "./sky.js";
 import { debugStats, debugPanel } from "./debugGUI.js";
 
 'use strict';
-
-function createEquirectangularTexture(renderer, imgSrc, callback) {
-  let texture = new THREE.TextureLoader().load(
-    imgSrc,
-    () => {
-      let renderTarget = new THREE.WebGLCubeRenderTarget(texture.image.height);
-      renderTarget.fromEquirectangularTexture(renderer, texture);
-      callback(renderTarget);
-    }
-  );
-}
 
 let mainScene = new THREE.Scene();
 
@@ -49,8 +39,6 @@ fpsControls.eventListeners.switch();
 
 let sky = new Sky();
 
-console.log(sky.material.uniforms);
-
 sky.material.uniforms['turbidity'].value=10;
 sky.material.uniforms['rayleigh'].value=2;
 sky.material.uniforms['mieCoefficient'].value=0.005;
@@ -62,11 +50,11 @@ mainScene.add(sky);
 
 
 let plane = new THREE.Mesh(
-  new THREE.BoxGeometry(20, 20, 2),
+  new THREE.BoxGeometry(20, 20, 0.1),
   new THREE.MeshBasicMaterial({ color: "#26c728" })
 );
-plane.position.set(0, -2, 0);
 plane.rotateX(THREE.MathUtils.degToRad(90));
+plane.position.set(0, -2, 0);
 
 mainScene.add(plane);
 
@@ -77,6 +65,27 @@ let sphere = new THREE.Mesh(
 sphere.frustrumCulled = false;
 sphere.position.set(0, 0, -2);
 mainScene.add(sphere);
+
+
+var world = new CANNON.World();
+world.gravity.set(0, 0, 1);
+
+var sphereBody = new CANNON.Body({
+   mass: 0.1, // kg
+   position: new CANNON.Vec3(0, 1, -2), // m
+   shape: new CANNON.Sphere(1)
+});
+world.addBody(sphereBody);
+
+// Create a plane
+var groundBody = new CANNON.Body({
+    mass: 0, // mass == 0 makes the body static
+    shape: new CANNON.Plane()
+});
+world.addBody(groundBody);
+
+var fixedTimeStep = 1.0 / 60.0; // seconds
+var maxSubSteps = 3;
 
 let cameraControls = new function() {
   this.fov = playerCamera.fov;
@@ -150,7 +159,10 @@ function updateSphereValues() {
   }
 }
 
-function render() {
+var lastTime;
+
+function render(time  ) {
+
   updateCameraValues();
   updateSphereValues();
 
@@ -159,6 +171,15 @@ function render() {
   renderer.render(mainScene, playerCamera);
 
   debugStats.update();
+
+  if(lastTime !== undefined){
+     var dt = (time - lastTime) / 1000;
+     world.step(fixedTimeStep, dt, maxSubSteps);
+  }
+  lastTime = time;
+
+  sphere.position.copy(sphereBody.position);
+  sphere.quaternion.copy(sphereBody.quaternion);
   requestAnimationFrame(render);
 }
 
