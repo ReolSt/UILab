@@ -2,8 +2,8 @@ import * as THREE from "../three/build/three.module.js";
 import "../cannon.js/build/cannon.min.js";
 import { renderer } from "./renderer.js";
 import { playerCamera } from "./camera.js";
-import { FPSControls } from "./fpsControls.js";
-import { IsometricControls } from "./isometricControls.js";
+import { FPSController } from "./fpsController.js";
+import { IsometricController } from "./isometricController.js";
 import { Sky } from "./sky.js";
 import { debugStats, debugPanel } from "./debugGUI.js";
 
@@ -11,31 +11,7 @@ import { debugStats, debugPanel } from "./debugGUI.js";
 
 let mainScene = new THREE.Scene();
 
-let fpsControls = new FPSControls(playerCamera);
-let isometricControls = new IsometricControls(playerCamera);
-
-let controls;
-
-function useControls(newControls) {
-  if(controls) {
-    controls.detach();
-  }
-
-  if(controls === newControls) {
-    return;
-  }
-
-  newControls.attach();
-  controls = newControls;
-
-  newControls.eventListeners.switch();
-}
-
-// useControls(fpsControls);
-
-fpsControls.attach();
-fpsControls.eventListeners.switch();
-
+let controller = new FPSController(playerCamera);
 
 let sky = new Sky();
 
@@ -82,12 +58,13 @@ var groundBody = new CANNON.Body({
     mass: 0, // mass == 0 makes the body static
     shape: new CANNON.Plane()
 });
+groundBody.position.set(0, -2, 0);
 world.addBody(groundBody);
 
 var fixedTimeStep = 1.0 / 60.0; // seconds
 var maxSubSteps = 3;
 
-let cameraControls = new function() {
+let cameraController = new function() {
   this.fov = playerCamera.fov;
   this.near = playerCamera.near;
   this.far = playerCamera.far;
@@ -95,37 +72,37 @@ let cameraControls = new function() {
 };
 
 let folderCamera = debugPanel.addFolder("camera");
-folderCamera.add(cameraControls, "fov", 60, 120);
-folderCamera.add(cameraControls, "near", 0.01, 1);
-folderCamera.add(cameraControls, "far", 10, 10000);
-folderCamera.add(cameraControls, "view", ["FPS", "Isometric"]);
+folderCamera.add(cameraController, "fov", 60, 120);
+folderCamera.add(cameraController, "near", 0.01, 1);
+folderCamera.add(cameraController, "far", 10, 10000);
+folderCamera.add(cameraController, "view", ["FPS", "Isometric"]);
 folderCamera.open();
 
 function updateCameraValues() {
-  playerCamera.fov = cameraControls.fov;
-  playerCamera.near = cameraControls.near;
-  playerCamera.far = cameraControls.far;
-  switch(cameraControls.view) {
+  playerCamera.fov = cameraController.fov;
+  playerCamera.near = cameraController.near;
+  playerCamera.far = cameraController.far;
+  switch(cameraController.view) {
     case "FPS":
-      useControls(fpsControls);
+      useController(fpsController);
       break;
     case "Isometric":
-      useControls(isometricControls);
+      useController(isometricController);
       break;
   }
   playerCamera.updateProjectionMatrix();
 }
 
-let sphereControls = new function() {
+let sphereController = new function() {
   this.material = "Basic";
 };
 
 let folderSphere = debugPanel.addFolder("sphere");
-folderSphere.add(sphereControls, "material", ["Basic", "Depth", "Distance", "Lambert", "Matcap", "Normal", "Phong", "Physical", "Standard", "Toon"]);
+folderSphere.add(sphereController, "material", ["Basic", "Depth", "Distance", "Lambert", "Matcap", "Normal", "Phong", "Physical", "Standard", "Toon"]);
 folderSphere.open();
 
 function updateSphereValues() {
-  switch(sphereControls.material) {
+  switch(sphereController.material) {
     case "Basic":
       sphere.material = new THREE.MeshBasicMaterial({ color: "#2e97f2" });
       break;
@@ -166,7 +143,7 @@ function render(time  ) {
   updateCameraValues();
   updateSphereValues();
 
-  controls.eventListeners.keypressframe();
+  controller.eventListeners.keypressframe();
 
   renderer.render(mainScene, playerCamera);
 
