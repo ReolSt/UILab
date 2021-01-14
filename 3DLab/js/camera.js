@@ -19,10 +19,11 @@ let playerCamera = perspectiveCamera;
 
 window.addEventListener("resize", event => {
   width = renderer.domElement.width;
-  height = renderer.domElmenet.height;
+  height = renderer.domElement.height;
   aspect = width / height;
 
   perspectiveCamera.aspect = aspect;
+  perspectiveCamera.updateProjectionMatrix();
 });
 
 export { playerCamera };

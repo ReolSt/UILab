@@ -10,8 +10,7 @@ mainCanvas.width = mainCanvas.clientWidth;
 mainCanvas.height = mainCanvas.clientHeight;
 
 let renderer = new THREE.WebGLRenderer({
-  canvas: mainCanvas,
-  antialias: true
+  canvas: mainCanvas
 });
 
 renderer.setSize(mainCanvas.width, mainCanvas.height);

@@ -5,7 +5,7 @@ import { UserInputEventListener } from "./eventListener.js";
 
 'use strict';
 
-export class IsometricController extends UserInputEventListener {
+class IsometricController extends UserInputEventListener {
   constructor(camera) {
     super(document.body);
 
@@ -16,11 +16,13 @@ export class IsometricController extends UserInputEventListener {
 
     this.moveSpeed = 0.05;
 
+    this.addEventType("switch");
     this.addEventListener("switch", () => {
       this.camera.rotation.set(-Math.PI / 4, Math.PI / 4, 0);
       this.camera.position.y = this.cameraHeight;
     });
 
+    this.addEventType("keypressframe");
     this.addEventListener("keypressframe", () => {
       if (pressedKeys["w"]) {
         this.camera.position.z -= this.moveSpeed * Math.cos(this.camera.rotation.y);
@@ -41,3 +43,5 @@ export class IsometricController extends UserInputEventListener {
     });
   }
 }
+
+export { IsometricController };

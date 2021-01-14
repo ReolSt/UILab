@@ -1,5 +1,4 @@
 import * as THREE from "../three/build/three.module.js";
-import "../cannon.js/build/cannon.min.js";
 import { renderer } from "./renderer.js";
 import { playerCamera } from "./camera.js";
 import { FPSController } from "./fpsController.js";
@@ -13,6 +12,7 @@ let mainScene = new THREE.Scene();
 
 let controller = new FPSController(playerCamera);
 
+
 let sky = new Sky();
 
 sky.material.uniforms['turbidity'].value=10;
@@ -24,42 +24,43 @@ sky.material.uniforms['sunPosition'].value.copy(new THREE.Vector3(0.5, 0.2, 0.5)
 sky.scale.setScalar(450000);
 mainScene.add(sky);
 
-
-let plane = new THREE.Mesh(
+let ground = new THREE.Mesh(
   new THREE.BoxGeometry(20, 20, 0.1),
   new THREE.MeshBasicMaterial({ color: "#26c728" })
 );
-plane.rotateX(THREE.MathUtils.degToRad(90));
-plane.position.set(0, -2, 0);
-
-mainScene.add(plane);
+ground.rotation.x = THREE.MathUtils.degToRad(90);
+ground.position.set(0, -2, 0);
+mainScene.add(ground);
 
 let sphere = new THREE.Mesh(
   new THREE.SphereGeometry(1, 32, 32),
   new THREE.MeshBasicMaterial({ color: "#2e97f2" })
 );
 sphere.frustrumCulled = false;
-sphere.position.set(0, 0, -2);
+sphere.position.set(0, 1, -2);
 mainScene.add(sphere);
 
 
 var world = new CANNON.World();
 world.gravity.set(0, 0, 1);
 
-var sphereBody = new CANNON.Body({
-   mass: 0.1, // kg
-   position: new CANNON.Vec3(0, 1, -2), // m
-   shape: new CANNON.Sphere(1)
+var groundBody = new CANNON.Body({
+  mass: 0,
+  shape: new CANNON.Plane()
 });
+groundBody.position.copy(ground.position);
+groundBody.quaternion.copy(ground.quaternion);
+world.addBody(groundBody);
+
+var sphereBody = new CANNON.Body({
+  mass: 1,
+  position: new CANNON.Vec3(0, 1, -2),
+  shape: new CANNON.Sphere(1)
+});
+sphereBody.position.copy(sphere.position);
+sphereBody.quaternion.copy(sphere.quaternion);
 world.addBody(sphereBody);
 
-// Create a plane
-var groundBody = new CANNON.Body({
-    mass: 0, // mass == 0 makes the body static
-    shape: new CANNON.Plane()
-});
-groundBody.position.set(0, -2, 0);
-world.addBody(groundBody);
 
 var fixedTimeStep = 1.0 / 60.0; // seconds
 var maxSubSteps = 3;
@@ -84,10 +85,10 @@ function updateCameraValues() {
   playerCamera.far = cameraController.far;
   switch(cameraController.view) {
     case "FPS":
-      useController(fpsController);
+      // useController(fpsController);
       break;
     case "Isometric":
-      useController(isometricController);
+      // useController(isometricController);
       break;
   }
   playerCamera.updateProjectionMatrix();
@@ -136,27 +137,23 @@ function updateSphereValues() {
   }
 }
 
-var lastTime;
-
-function render(time  ) {
+var lastTime = 0.0;
+function render(time = 0.0) {
 
   updateCameraValues();
   updateSphereValues();
-
-  controller.eventListeners.keypressframe();
+  
+  controller.dispatchEvent("keypressframe");
 
   renderer.render(mainScene, playerCamera);
-
   debugStats.update();
 
-  if(lastTime !== undefined){
-     var dt = (time - lastTime) / 1000;
-     world.step(fixedTimeStep, dt, maxSubSteps);
-  }
+  var dt = (time - lastTime) / 100000;
+  world.step(fixedTimeStep, dt, maxSubSteps);
   lastTime = time;
-
+  
   sphere.position.copy(sphereBody.position);
-  sphere.quaternion.copy(sphereBody.quaternion);
+  
   requestAnimationFrame(render);
 }
 

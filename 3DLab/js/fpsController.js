@@ -17,12 +17,12 @@ class FPSController extends UserInputEventListener {
 
     this._jumpAnimation = false;
     this._jumpAnimationKey = 0;  
-
+    this.addEventType("switch");
     this.addEventListener("switch", () => {
       this.camera.rotation.set(0, 0, 0);
       this.camera.position.y = 0;
     });
-
+    this.addEventType("keypressframe");
     this.addEventListener("keypressframe", () => {
       if (pressedKeys["w"]) {
         this.camera.position.z -= this.moveSpeed * Math.cos(this.camera.rotation.y);
@@ -50,7 +50,7 @@ class FPSController extends UserInputEventListener {
       }
     });
 
-    this.mouseEventListeners.addEventListener("mousemove", event => {
+    this.addEventListener("mousemove", event => {
       if(isPointerLocked) {
         this.camera.rotation.x = THREE.MathUtils.clamp(-Math.PI / 4, this.camera.rotation.x - this.mouseSensitivity * event.movementY, Math.PI / 3);
         this.camera.rotation.y -= this.mouseSensitivity * event.movementX;
@@ -68,4 +68,4 @@ class FPSController extends UserInputEventListener {
   }
 }
 
-export { FPSControls };
+export { FPSController };
