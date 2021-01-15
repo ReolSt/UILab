@@ -41,11 +41,11 @@ class FPSController extends UserInputEventListener {
         this.camera.position.z -= this.moveSpeed * Math.sin(this.camera.rotation.y);
       }
 
-      if (pressedKeys[" "] && !this.jumpAnimation) {
-        this.jumpAnimation = true;
+      if (pressedKeys[" "] && !this._jumpAnimation) {
+        this._jumpAnimation = true;
       }
 
-      if (this.jumpAnimation) {
+      if (this._jumpAnimation) {
         this.jump();
       }
     });

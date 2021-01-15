@@ -1,21 +1,51 @@
 class EventListener {
-  constructor(eventTarget = document.body, eventTypes = []) {
+  constructor(eventTarget, eventTypes = []) {
     this.callbacks = {};
+    this.callbackRunners = {};
     eventTypes.forEach(eventType => {
       this.callbacks[eventType] = [];
+      this.callbackRunners[eventType] = event => {
+        this.callbacks[eventType].forEach(callback => {
+          callback(event);
+        });
+      }
     });
 
     this.eventTarget = eventTarget;
 
     if(this.eventTarget.addEventListener) {
-      Object.keys(this.callbacks).forEach(eventType => {
-        this.eventTarget.addEventListener(eventType, event => {
-          this.callbacks[eventType].forEach(callback => {
-            callback(event);
-          });
-        });
+      Object.keys(this.callbackRunners).forEach(eventType => {
+        this.eventTarget.addEventListener(eventType, this.callbackRunners[eventType]);
       });
     }
+  }
+
+  attach(eventTarget) {
+    if(this.eventTarget === eventTarget) {
+      return;
+    }
+
+    this.detach();
+
+    this.eventTarget = eventTarget;
+    if(this.eventTarget.addEventListener) {
+      this.eventTypes.forEach(eventType => {
+        this.eventTarget.addEventListener(eventType, this.callbackRunners[eventType]);
+      });
+    }
+  }
+
+  detach() {
+    this.eventTarget = undefined;
+    if(this.eventTarget.removeEventListener) {
+      this.eventTypes.forEach(eventType => {
+        this.eventTarget.removeEventListener(eventType, this.callbackRunners[eventType]);
+      });
+    }
+  }
+
+  get eventTypes() {
+    return Object.keys(this.callbacks);
   }
 
   addEventType(eventType) {
@@ -24,15 +54,34 @@ class EventListener {
     }
 
     this.callbacks[eventType] = [];
-    this.eventTarget.addEventListener(eventType, event => {
+    this.callbackRunners[eventType] = event => {
       this.callbacks[eventType].forEach(callback => {
         callback(event);
       });
+    }
+
+    this.eventTarget.addEventListener(eventType, this.callbackRunners[eventType]);
+  }
+
+  addEventTypes(eventTypes) {
+    eventTypes.forEach(eventType => {
+      this.addEventType(eventType);
     });
   }
 
   removeEventType(eventType) {
-    this.callbacks[eventType] = undefined;
+    if(this.callbacks[eventType]) {
+      this.eventTarget.removeEventListener(eventType, this.callbackRunners[eventType]);
+
+      this.callbacks[eventType] = undefined;
+      this.callbackRunners[eventType] = undefined;
+    }
+  }
+
+  removeEventTypes(eventTypes) {
+    eventTypes.forEach(eventType => {
+      this.removeEventType(eventType);
+    })
   }
 
   addEventListener(eventType, callbackArg) {
@@ -55,14 +104,16 @@ class EventListener {
 }
 
 class KeyBoardEventListener extends EventListener {
+  static eventTypes = ["keydown", "keyup", "keypress"]
   constructor(eventTarget) {    
-    super(eventTarget, ["keydown", "keyup", "keypress"]);
+    super(eventTarget, KeyBoardEventListener.eventTypes);
   }
 }
 
 class MouseEventListener extends EventListener {
+  static eventTypes = ["mousedown", "mouseup", "mousemove", "mouseenter", "mouseleave", "mouseover", "mouseout", "wheel"];
   constructor(eventTarget) {
-    super(eventTarget, ["mousedown", "mouseup", "mousemove", "mouseenter", "mouseleave", "mouseover", "mouseout", "wheel"]);
+    super(eventTarget, MouseEventListener.eventTypes);
   }
 }
 
@@ -70,11 +121,11 @@ class UserInputEventListener extends EventListener {
   constructor(eventTarget) {
     super(eventTarget);
     
-    Object.keys(new KeyBoardEventListener(this.eventTarget).callbacks).forEach(eventType => {
+    KeyBoardEventListener.eventTypes.forEach(eventType => {
       this.addEventType(eventType);
     });
 
-    Object.keys(new MouseEventListener(this.eventTarget).callbacks).forEach(eventType => {
+    MouseEventListener.eventTypes.forEach(eventType => {
       this.addEventType(eventType);
     });
   }
