@@ -1,5 +1,5 @@
 import * as THREE from "../three/build/three.module.js";
-import "../cannon.js/cannon.min.js";
+import "../cannon/cannon.min.js";
 import { renderer } from "./renderer.js";
 import { playerCamera } from "./camera.js";
 import { FPSController } from "./fpsController.js";
@@ -7,7 +7,13 @@ import { IsometricController } from "./isometricController.js";
 import { Sky } from "./sky.js";
 import { debugStats, debugPanel } from "./debugGUI.js";
 
+import { OBJLoader } from "../three/examples/jsm/loaders/OBJLoader.js";
+import { MTLLoader } from "../three/examples/jsm/loaders/MTLLoader.js";
+
 'use strict';
+
+let objLoader = new OBJLoader();
+let mtlLoader = new MTLLoader();
 
 let mainScene = new THREE.Scene();
 
@@ -85,6 +91,13 @@ boxBody.quaternion.copy(box.quaternion);
 boxBody.linearDamping = -30;
 boxBody.angularDamping = -30;
 world.addBody(boxBody);
+
+mtlLoader.load("resources/models/stone/stone.mtl", mtl => {
+  objLoader.setMaterials(mtl);
+  objLoader.load("resources/models/stone/stone.obj", root => {
+    mainScene.add(root);
+  })
+});
 
 let skyController = new function() {
   this.turbidity = sky.material.uniforms['turbidity'].value;
