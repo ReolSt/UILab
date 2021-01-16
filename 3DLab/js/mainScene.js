@@ -21,7 +21,7 @@ let controller = new FPSController(playerCamera);
 
 playerCamera.position.set(0, 0, 10);
 
-let sun = new THREE.DirectionalLight("#FFFFF", 1);
+let sun = new THREE.DirectionalLight("#FFFFFF", 1);
 sun.position.set(0.5, 0.2, 0.5);
 mainScene.add(sun);
 
